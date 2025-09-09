@@ -2,7 +2,7 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import VendorLogin from '../features/auth/components/VendorLogin';
 import Dashboard from '../features/dashboard/components/Dashboard';
-
+import AddUser from '../pages/AddUser'; // <-- import the new page
 
 function TitleScreen() {
   return (
@@ -32,6 +32,7 @@ export default function App() {
         <Route path="/" element={<TitleScreen />} />
         <Route path="/login" element={<VendorLogin />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/add-user" element={<AddUser />} /> {/* New AddUser route */}
       </Routes>
     </Router>
   );
