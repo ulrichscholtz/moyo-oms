@@ -1,70 +1,67 @@
-# Getting Started with Create React App
+# Order Management System (OMS)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview  
+The **Order Management System (OMS)** is a core component of the **Online Order Solution**. It enables vendors to manage product pricing, stock levels, and order allocation. The system processes incoming orders from the **Client Portal**, matches them with vendor inventory and pricing, and ensures accurate order updates.  
 
-## Available Scripts
+This repository represents the implementation of the OMS stream chosen from the case study project.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## Features  
+- Vendor authentication using OAuth 2.0 / OpenID Connect  
+- Configure product pricing per vendor  
+- Inventory management for each vendor  
+- Asynchronous communication:  
+  - Receives new orders from the Client Portal  
+  - Sends status updates back to the Client Portal  
+- Order allocation engine:  
+  - Allocates orders to vendors based on stock availability and price  
+- Integration with Product Management System for synchronous product data retrieval  
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Technology Stack  
+- **Frontend:** React
+- **Backend:** Java (Spring Boot)  
+- **Database:** Spring Data  
+- **Authentication:** OpenID Connect  
+- **Cloud:** Public Cloud (Azure) - PaaS  
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## System Workflow  
+1. The Client Portal submits a new order.  
+2. The OMS receives the order asynchronously.  
+3. OMS checks vendor inventory and pricing.  
+4. OMS allocates the order to the most suitable vendor.  
+5. OMS updates the Client Portal asynchronously with the order status.  
+6. OMS communicates with the Product Management System synchronously for product details.  
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Getting Started  
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Prerequisites  
+- Node.js and npm/yarn (for frontend)  
+- Java JDK (17 or later recommended)  
+- Maven or Gradle  
+- Database (PostgreSQL, MySQL, or similar)  
+- Cloud account (Azure or AWS)  
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Setup Instructions  
+1. Clone the repository:  
+   ```bash
+   git clone https://github.com/ulrichscholtz/moyo-oms.git
+   cd moyo-oms
 
-### `npm run eject`
+2. Install dependencies (frontend and backend).
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+3. Configure database connection and OAuth provider.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+4. Run the backend service:
+   ```bash
+   ./mvnw spring-boot:run
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+5. Run the frontend (React):
+   ```bash
+   npm start
