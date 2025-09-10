@@ -3,6 +3,7 @@ package com.moyo.oms.backend.entity;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "orders")
@@ -15,6 +16,9 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
+
+    @Column(nullable = false)
+    private LocalDateTime dateOfOrder; 
 
     @Column(nullable = false)
     private int amount;
@@ -36,6 +40,7 @@ public class Order {
         this.status = status;
         this.total = total;
         this.userId = userId;
+        this.dateOfOrder = LocalDateTime.now();
     }
 
     // Getters and setters
@@ -56,4 +61,7 @@ public class Order {
 
     public String getUserId() { return userId; }
     public void setUserId(String userId) { this.userId = userId; }
+
+    public LocalDateTime getDateOfOrder() { return dateOfOrder; }
+    public void setDateOfOrder(LocalDateTime dateOfOrder) { this.dateOfOrder = dateOfOrder; }
 }

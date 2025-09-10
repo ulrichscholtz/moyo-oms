@@ -423,20 +423,21 @@ function Dashboard() {
   <h2>Orders</h2>
 
   <div className="simulate-orders-wrapper">
-  <button className="simulate-orders-btn" onClick={handleSimulateOrders}>
-    Simulate Orders
-  </button>
-  <button className="delete-all-orders-btn" onClick={handleDeleteAllOrders}>
-    Delete All Orders
-  </button>
-  {showOrderMessage && <div className="order-message">{orderMessage}</div>}
-</div>
+    <button className="simulate-orders-btn" onClick={handleSimulateOrders}>
+      Simulate Orders
+    </button>
+    <button className="delete-all-orders-btn" onClick={handleDeleteAllOrders}>
+      Delete All Orders
+    </button>
+    {showOrderMessage && <div className="order-message">{orderMessage}</div>}
+  </div>
 
   <div className="orders-table-container">
     <table className="orders-table">
       <thead>
         <tr>
           <th>ORDER ID</th>
+          <th>DATE OF ORDER</th>
           <th>PRODUCT</th>
           <th>AMOUNT</th>
           <th>TOTAL (ZAR)</th>
@@ -445,48 +446,49 @@ function Dashboard() {
         </tr>
       </thead>
       <tbody>
-    {orders.length > 0 ? (
-      orders.map(o => (
-        <motion.tr
-          key={o.id}
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 10 }}
-          transition={{ duration: 0.3 }}
-        >
-          <td className="order-id">{o.id}</td>
-          <td>{o.product?.name || 'N/A'}</td>
-          <td>{o.amount}</td>
-          <td>{o.total}</td>
-          <td>
-            <motion.span
-              key={o.status}
-              className={`status-badge ${o.status.toLowerCase()}`}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
+        {orders.length > 0 ? (
+          orders.map(o => (
+            <motion.tr
+              key={o.id}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
               transition={{ duration: 0.3 }}
             >
-              {o.status}
-            </motion.span>
-          </td>
-          <td>
-            <button className="edit-btn" onClick={() => openEditOrderModal(o)}>Edit</button>
-            <button className="delete-btn" onClick={() => confirmDeleteOrder(o.id)}>Delete</button>
-          </td>
-        </motion.tr>
-      ))
-    ) : (
-      <tr style={{ height: '100px' }}>
-        <td colSpan="6" style={{ textAlign: 'center', color: '#6b7280', fontStyle: 'italic', fontSize: '1.2em' }}>
-          No Orders Yet
-        </td>
-      </tr>
-    )}
-</tbody>
-
+              <td className="order-id">{o.id}</td>
+              <td>{o.dateOfOrder ? new Date(o.dateOfOrder).toLocaleDateString() : 'N/A'}</td> {/* FIXED */}
+              <td>{o.product?.name || 'N/A'}</td>
+              <td>{o.amount}</td>
+              <td>{o.total}</td>
+              <td>
+                <motion.span
+                  key={o.status}
+                  className={`status-badge ${o.status.toLowerCase()}`}
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {o.status}
+                </motion.span>
+              </td>
+              <td>
+                <button className="edit-btn" onClick={() => openEditOrderModal(o)}>Edit</button>
+                <button className="delete-btn" onClick={() => confirmDeleteOrder(o.id)}>Delete</button>
+              </td>
+            </motion.tr>
+          ))
+        ) : (
+          <tr style={{ height: '100px' }}>
+            <td colSpan="7" style={{ textAlign: 'center', color: '#6b7280', fontStyle: 'italic', fontSize: '1.2em' }}>
+              No Orders Yet
+            </td>
+          </tr>
+        )}
+      </tbody>
     </table>
   </div>
 </section>
+
       </div>
 
       {/* ----- MODALS ----- */}
