@@ -19,6 +19,7 @@ public class UserService {
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
+    // Create a new user (signup)
     public User createUser(User user) {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("Email already exists");
@@ -27,25 +28,30 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    // Login user
     public User login(String email, String rawPassword) {
-    Optional<User> optionalUser = userRepository.findByEmail(email);
-    if (optionalUser.isEmpty()) {
-        throw new RuntimeException("User not found");
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+
+        User user = optionalUser.get();
+
+        if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
+            throw new RuntimeException("Incorrect password");
+        }
+
+        return user; // optionally return a DTO instead of full User
     }
 
-    User user = optionalUser.get();
-    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
-    if (!encoder.matches(rawPassword, user.getPassword())) {
-        throw new RuntimeException("Incorrect password");
-    }
-
-    return user; // optionally return a DTO instead of full User
-}
-
-    // UserService.java
+    // Fetch all users
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
+    // <--- Add this method so ProductController can get user by email
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
 }
