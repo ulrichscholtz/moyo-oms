@@ -422,7 +422,7 @@ const filteredOrders = orders
         >
           <td>{p.prodCode}</td>
           <td>{p.name}</td>
-          <td>{parseFloat(p.price).toFixed(2)}</td>
+          <td>{parseFloat(p.price).toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
           <td>{p.stock}</td>
           <td>
             <button className="edit-btn" onClick={() => openEditModal(p)}>Edit</button>
@@ -503,7 +503,8 @@ const filteredOrders = orders
           <td>{o.dateOfOrder ? new Date(o.dateOfOrder).toLocaleDateString() : 'N/A'}</td>
           <td>{o.product?.name || 'N/A'}</td>
           <td>{o.amount}</td>
-          <td>{o.total}</td>
+          <td>{parseFloat(o.total).toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+
           <td>
             <motion.span
               key={o.status}

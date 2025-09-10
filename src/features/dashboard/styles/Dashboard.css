@@ -795,6 +795,11 @@ body {
   opacity: 1;
   transform: translateX(0);
   pointer-events: auto;
+  border: none;
+}
+
+.search-input:focus {
+  outline-color: #00b894;
 }
 
 /* Move message left when search is active */

@@ -121,7 +121,7 @@ const COLORS = generateShades('00b894', topProductsData.length);
 
       <div className="dashboard-main" style={{ marginLeft: sidebarOpen ? 220 : 0, transition: 'margin-left 0.2s' }}>
         <h1 className="dashboard-title">Statistics</h1>
-        <div className="dashboard-subtitle">Overview of your products and orders</div>
+        <div className="dashboard-subtitle">Overview of your products and orders (last 30 days)</div>
 
         <div className="stats-cards">
           <motion.div className="stat-card" whileHover={{ scale: 1.05 }}>
@@ -130,13 +130,26 @@ const COLORS = generateShades('00b894', topProductsData.length);
           </motion.div>
 
           <motion.div className="stat-card" whileHover={{ scale: 1.05 }}>
+            <h3>Total Stock (All Products)</h3>
+            <p>{products.reduce((sum, product) => sum + (product.stock || 0), 0)}</p>
+            </motion.div>
+
+          <motion.div className="stat-card" whileHover={{ scale: 1.05 }}>
             <h3>Total Orders</h3>
             <p>{totalOrders}</p>
           </motion.div>
 
           <motion.div className="stat-card" whileHover={{ scale: 1.05 }}>
+            <h3>Total Products Sold</h3>
+            <p>
+            {orders.reduce((sum, order) => sum + (order.amount || 0), 0)}
+            </p>
+            </motion.div>
+
+
+          <motion.div className="stat-card" whileHover={{ scale: 1.05 }}>
             <h3>Total Revenue (ZAR)</h3>
-            <p>{totalRevenue.toFixed(2)}</p>
+            <p>{totalRevenue.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
           </motion.div>
         </div>
 
