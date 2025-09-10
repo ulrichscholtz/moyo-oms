@@ -10,11 +10,11 @@ const VendorLogin = () => {
     const [scopes, setScopes] = useState('openid profile email');
 
     const handleOpenIDLogin = () => {
-        alert('Logging in with OpenID (Demo)');
+        alert('Logging in with OpenID (WIP)');
     };
 
-    const handleDemoLogin = () => {
-        navigate("/dashboard");
+    const handleNormalLogin = () => {
+        navigate("/classic-login");
     };
 
   return (
@@ -41,10 +41,10 @@ const VendorLogin = () => {
 
       <button
         onClick={handleOpenIDLogin} className="login-button">
-        Login with OpenID (Demo)
+        Login with OpenID (WIP)
       </button>
-      <button onClick={handleDemoLogin} className="demo-button">
-        Continue as Demo Vendor
+      <button onClick={handleNormalLogin} className="demo-button">
+        Traditional Sign In
       </button>
     </div>
   );

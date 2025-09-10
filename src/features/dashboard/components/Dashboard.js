@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../styles/Dashboard.css';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 
 function Dashboard() {
@@ -31,6 +32,15 @@ function Dashboard() {
             navigate("/login"); // redirect to login page
         }
     };
+
+    const [userEmail, setUserEmail] = useState('');
+
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('loggedInUser'));
+        if (user && user.email) {
+            setUserEmail(user.email);
+        }
+    }, []);
 
     return (
         <div className="dashboard-container">
@@ -71,7 +81,7 @@ function Dashboard() {
             >
                 <h1 className="dashboard-title">Vendor Dashboard</h1>
                 <div className="dashboard-subtitle">
-                    Signed in as <span className="dashboard-email">vendor@moyo.example</span>
+                    Signed in as <span className="dashboard-email">{userEmail || 'Unknown User'}</span>
                 </div>
 
                 <section className="manage-products-section">

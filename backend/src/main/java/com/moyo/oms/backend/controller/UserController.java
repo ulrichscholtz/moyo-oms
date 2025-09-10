@@ -2,6 +2,7 @@
 package com.moyo.oms.backend.controller;
 
 import com.moyo.oms.backend.entity.User;
+import com.moyo.oms.backend.service.UserService;
 import com.moyo.oms.backend.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,21 +13,25 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
-    private final UserRepository userRepository;
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
-    @PostMapping
-    public User createUser(@RequestBody User user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new RuntimeException("Email already exists");
-        }
-        return userRepository.save(user);
+    @PostMapping("/signup")
+    public User signup(@RequestBody User user) {
+        return userService.createUser(user);
+    }
+
+    @PostMapping("/login")
+    public User login(@RequestBody User user) {
+    return userService.login(user.getEmail(), user.getPassword());
     }
 
     @GetMapping
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return userService.getAllUsers();
     }
+
 }
