@@ -3,6 +3,7 @@ import '../styles/Dashboard.css';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { v4 as uuidv4 } from 'uuid';
+import { getAllUsers } from "../../../services/api";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -39,6 +40,13 @@ function Dashboard() {
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  const [users, setUsers] = useState([]);
+  useEffect(() => {
+    getAllUsers()
+      .then(setUsers)
+      .catch((err) => console.error("Failed to load users:", err));
+  }, []);
 
   useEffect(() => {
   const user = JSON.parse(localStorage.getItem('loggedInUser'));
