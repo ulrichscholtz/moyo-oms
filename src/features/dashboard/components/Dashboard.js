@@ -277,24 +277,44 @@ function Dashboard() {
   <div className="edit-modal-overlay">
     <div className="edit-modal-box">
       <h3>Edit Product</h3>
-      <input
-        type="text"
-        placeholder="Product Name"
-        value={productToEdit.name}
-        onChange={e => handleEditChange('name', e.target.value)}
-      />
-      <input
-        type="text"
-        placeholder="Price"
-        value={productToEdit.price}
-        onChange={e => handleEditChange('price', e.target.value)}
-      />
-      <input
-        type="number"
-        placeholder="Stock"
-        value={productToEdit.stock}
-        onChange={e => handleEditChange('stock', e.target.value)}
-      />
+      <div className="modal-divider"></div>
+
+      <div className="edit-field">
+        <label>Product ID:</label>
+        <span className="readonly-field">{productToEdit.id}</span>
+      </div>
+
+      <div className="modal-divider"></div>
+
+      <div className="edit-field">
+        <label>Name:</label>
+        <input
+          type="text"
+          value={productToEdit.name}
+          onChange={e => handleEditChange('name', e.target.value)}
+        />
+      </div>
+
+      <div className="edit-field">
+        <label>Price:</label>
+        <input
+          type="text"
+          value={productToEdit.price}
+          onChange={e => handleEditChange('price', e.target.value)}
+        />
+      </div>
+
+      <div className="edit-field">
+        <label>Stock:</label>
+        <input
+          type="number"
+          value={productToEdit.stock}
+          onChange={e => handleEditChange('stock', e.target.value)}
+        />
+      </div>
+
+      <div className="modal-divider"></div>
+
       <div className="edit-modal-actions">
         <button className="modal-btn cancel-btn" onClick={() => setEditModalOpen(false)}>Cancel</button>
         <button className="modal-btn save-btn" onClick={handleSaveEdit}>Save</button>
@@ -302,6 +322,7 @@ function Dashboard() {
     </div>
   </div>
 )}
+
     </div>
   );
 }
