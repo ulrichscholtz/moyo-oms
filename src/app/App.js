@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import VendorLogin from '../features/auth/components/VendorLogin';
 import NormalLogin from '../features/auth/components/NormalLogin';
 import Dashboard from '../features/dashboard/components/Dashboard';
+import Statistics from '../features/stats/components/Statistics';
 
 function TitleScreen() {
   return (
@@ -33,6 +34,7 @@ export default function App() {
         <Route path="/login" element={<VendorLogin />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/classic-login" element={<NormalLogin />} />
+        <Route path="/statistics" element={<Statistics />} />
       </Routes>
     </Router>
   );

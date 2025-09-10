@@ -45,16 +45,24 @@ function Dashboard() {
   }
   setUserEmail(user.email);
 
+  // Fetch products
   fetch(`http://localhost:8080/api/products?userId=${user.userId}`)
     .then(res => res.json())
     .then(data => {
-  const productsWithCode = data.map((p, index) => ({
-    ...p,
-    prodCode: `PROD-${String(index + 1).padStart(4, '0')}` // fixed, stored in state
-  }));
-  setProducts(productsWithCode);
-})
+      const productsWithCode = data.map((p, index) => ({
+        ...p,
+        prodCode: `PROD-${String(index + 1).padStart(4, '0')}`
+      }));
+      setProducts(productsWithCode);
+    })
     .catch(err => console.error(err));
+
+  // Fetch orders
+  fetch(`http://localhost:8080/api/orders?userId=${user.userId}`)
+    .then(res => res.json())
+    .then(data => setOrders(data))
+    .catch(err => console.error(err));
+
 }, [navigate]);
 
   const toggleSidebar = () => setSidebarOpen(open => !open);
@@ -352,8 +360,8 @@ const filteredOrders = orders
       <aside className="dashboard-sidebar" style={{ display: sidebarOpen ? 'block' : 'none' }}>
         <h2>Menu</h2>
         <ul>
-          <li>Dashboard</li>
-          <li>Statistics</li>
+          <li onClick={() => navigate('/dashboard')} style={{ cursor: 'pointer' }}>Dashboard</li>
+          <li onClick={() => navigate('/statistics')} style={{ cursor: 'pointer' }}>Statistics</li>
           <li>Settings</li>
           <li onClick={handleLogout}>Logout</li>
         </ul>
