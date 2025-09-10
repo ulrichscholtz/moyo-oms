@@ -138,16 +138,24 @@ function Dashboard() {
 
   try {
     for (const order of orders) {
-      const res = await fetch(`http://localhost:8080/api/orders/${order.id}`, {
-        method: 'DELETE',
-      });
-
-      if (!res.ok) {
-        console.error(`Failed to delete order ${order.id}`);
-        continue; // skip this order
+      let res;
+      try {
+        res = await fetch(`http://localhost:8080/api/orders/${order.id}`, {
+          method: 'DELETE',
+        });
+      } catch (err) {
+        console.error(`Error deleting order ${order.id}:`, err);
+        continue; // skip to next order
       }
 
-      // Restore stock for the deleted order's product
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => null);
+        const msg = errorData?.message || `Cannot delete order ${order.id}.`;
+        alert(msg); // you could also show a modal if you prefer
+        continue; // skip to next order
+      }
+
+      // Update product stock for the deleted order
       setProducts(prev =>
         prev.map(p =>
           p.id === order.productId
@@ -157,13 +165,14 @@ function Dashboard() {
       );
     }
 
-    // Clear all orders from state
+    // Clear all orders from state after deletion
     setOrders([]);
     setOrderMessage("All orders deleted successfully.");
     setShowOrderMessage(true);
     setTimeout(() => setShowOrderMessage(false), 3000);
+
   } catch (err) {
-    console.error(err);
+    console.error("Error deleting all orders:", err);
     alert("Error deleting all orders. Try again.");
   }
 };
