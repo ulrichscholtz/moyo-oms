@@ -3,7 +3,10 @@ package com.moyo.oms.backend.controller;
 
 import com.moyo.oms.backend.entity.Product;
 import com.moyo.oms.backend.service.ProductService;
+import com.moyo.oms.backend.exception.ProductDeletionException;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -18,27 +21,27 @@ public class ProductController {
         this.productService = productService;
     }
 
-    // Get all products for a specific user
     @GetMapping
     public List<Product> getUserProducts(@RequestParam String userId) {
         return productService.getProductsByUser(userId);
     }
 
-    // Create a new product
     @PostMapping
     public Product createProduct(@RequestBody Product newProduct) {
         return productService.createProduct(newProduct);
     }
 
-    // Update a product by ID
     @PutMapping("/{id}")
     public Product updateProduct(@PathVariable Long id, @RequestBody Product updatedProduct) {
         return productService.updateProduct(id, updatedProduct);
     }
 
-    // Delete a product by ID
     @DeleteMapping("/{id}")
     public void deleteProduct(@PathVariable Long id) {
-        productService.deleteProduct(id);
+        try {
+            productService.deleteProduct(id);
+        } catch (ProductDeletionException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 }

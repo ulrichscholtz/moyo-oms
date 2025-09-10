@@ -137,6 +137,7 @@ body {
   padding: 28px 32px 18px 32px;
   margin-bottom: 2em;
   overflow-x: auto;
+  table-layout: fixed;
 }
 
 .products-table,
@@ -154,6 +155,7 @@ body {
   font-weight: 700;
   padding-bottom: 12px;
   letter-spacing: 0.5px;
+  border-bottom: 2px solid #e0e0e0; /* horizontal divider under headers */
 }
 
 .products-table td,
@@ -572,6 +574,38 @@ body {
   box-shadow: 0 4px 12px rgba(0, 206, 201, 0.35);
 }
 
+/* Styled select for edit modal */
+.edit-field select {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  border: 1.5px solid #e5e7eb;
+  background-color: #f9fafb;
+  transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+  appearance: none; /* remove default arrow */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D'10'%20height%3D'7'%20viewBox%3D'0%200%2010%207'%20xmlns%3D'http%3A//www.w3.org/2000/svg'%3E%3Cpath%20d%3D'M0%200l5%207%205-7z'%20fill%3D'%236b7280'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 10px 7px;
+  cursor: pointer;
+}
+
+.edit-field select:focus {
+  border-color: #00cec9;
+  box-shadow: 0 0 5px rgba(0, 206, 201, 0.25);
+  outline: none;
+}
+
+.edit-field select option {
+  padding: 8px;
+  background-color: #fff;
+  color: #374151;
+}
+
+
 .edit-field {
   display: flex;
   align-items: center;
@@ -655,3 +689,70 @@ body {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+.status-badge.delivered {
+  background: #e6f7ff;       /* light blue */
+  color: #0c63e4;            /* deep blue text */
+  border: 1.5px solid #0c63e4;
+}
+
+.status-badge.cancelled {
+  background: #ffe6e6;       /* light red */
+  color: #e23c3c;            /* red text */
+  border: 1.5px solid #e23c3c;
+}
+
+.simulate-orders-btn {
+  padding: 6px 12px;
+  border: none;
+  background: linear-gradient(90deg, #00b894 60%, #00cec9 100%);
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.5s ease, transform 0.4s ease, opacity 0.4s ease;
+  font-size: 0.95rem;
+}
+
+.delete-all-orders-btn {
+  padding: 6px 12px;
+  border: none;
+  background: linear-gradient(135deg, #ff5f6d, #e23c3c); /* red gradient */
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.5s ease, transform 0.4s ease, opacity 0.4s ease;
+  font-size: 0.95rem;
+  margin-left: 5px;
+}
+
+.delete-all-orders-btn:hover {
+    transform: scale(1.15);
+}
+
+.simulate-orders-btn:hover {
+    transform: scale(1.15);
+}
+
+.simulate-orders-wrapper {
+  display: flex;          /* flex container for buttons + message */
+  align-items: center;    /* vertically center everything */
+  gap: 10px;              /* spacing between buttons and message */
+  margin-bottom: 15px;
+  flex-wrap: wrap;        /* wrap if screen is too narrow */
+}
+
+.order-message {
+  color: #e67e22;
+  border: 1px solid #e67e22;
+  border-radius: 8px;
+  padding: 10px 15px;
+  margin-top: -12px;
+  font-size: 0.9rem;
+  background-color: #fff4e6;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: message-show 0.5s forwards, message-hide 0.5s 2.5s forwards;
+}
+
+

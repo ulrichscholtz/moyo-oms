@@ -1,4 +1,3 @@
-// src/main/java/com/moyo/oms/backend/service/ProductService.java
 package com.moyo.oms.backend.service;
 
 import com.moyo.oms.backend.entity.Product;
@@ -12,22 +11,20 @@ import java.util.Optional;
 public class ProductService {
 
     private final ProductRepository productRepository;
-
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
-    // Get all products for a specific user
     public List<Product> getProductsByUser(String userId) {
         return productRepository.findByUserId(userId);
     }
 
-    // Create a new product
-    public Product createProduct(Product product) {
-        return productRepository.save(product);
+    public Product createProduct(Product newProduct) {
+    // Simply save the new product to the repository
+    return productRepository.save(newProduct);
     }
 
-    // Update an existing product
+
     public Product updateProduct(Long id, Product updatedProduct) {
         Optional<Product> productOpt = productRepository.findById(id);
         if (productOpt.isEmpty()) throw new RuntimeException("Product not found");
@@ -35,12 +32,11 @@ public class ProductService {
         product.setName(updatedProduct.getName());
         product.setPrice(updatedProduct.getPrice());
         product.setStock(updatedProduct.getStock());
-        product.setUserId(updatedProduct.getUserId());
         return productRepository.save(product);
     }
 
-    // Delete a product
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
+    
 }
