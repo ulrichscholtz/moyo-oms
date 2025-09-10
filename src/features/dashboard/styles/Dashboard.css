@@ -747,6 +747,7 @@ body {
   border-radius: 8px;
   padding: 10px 15px;
   margin-top: -12px;
+  margin-left: -210px;
   font-size: 0.9rem;
   background-color: #fff4e6;
   text-align: center;
@@ -755,4 +756,48 @@ body {
   animation: message-show 0.5s forwards, message-hide 0.5s 2.5s forwards;
 }
 
+.search-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
 
+.search-toggle-btn {
+  border: none;
+  background: transparent;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-left: 5px;
+  transition: transform 0.2s ease;
+}
+
+.search-toggle-btn:hover {
+  transform: scale(1.2);
+}
+
+.search-input {
+  margin-left: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1.5px solid #e5e7eb;
+  width: 180px;
+
+  /* Hidden by default */
+  opacity: 0;
+  transform: translateX(-20px);
+  pointer-events: none;
+
+  /* Transition for both opacity and sliding */
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.search-container.active .search-input {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+/* Move message left when search is active */
+.search-container.active ~ .order-message {
+  margin-left: 0px; /* move left to make room for search input */
+}

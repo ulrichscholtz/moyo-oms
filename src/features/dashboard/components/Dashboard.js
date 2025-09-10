@@ -34,6 +34,9 @@ function Dashboard() {
   const [orderMessage, setOrderMessage] = useState('');
   const [showOrderMessage, setShowOrderMessage] = useState(false);
 
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
   useEffect(() => {
   const user = JSON.parse(localStorage.getItem('loggedInUser'));
   if (!user) {
@@ -318,6 +321,21 @@ function Dashboard() {
   }
 };
 
+const filteredOrders = orders
+  .map((o, index) => ({
+    ...o,
+    displayId: `ORD-${String(index + 1).padStart(4, '0')}` // ORD-0001, ORD-0002...
+  }))
+  .filter(o => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      o.displayId.toLowerCase().includes(query) ||
+      o.product?.name.toLowerCase().includes(query) ||
+      o.status.toLowerCase().includes(query)
+    );
+  });
+
   return (
     <div className="dashboard-container">
       {/* Sidebar Toggle */}
@@ -423,14 +441,31 @@ function Dashboard() {
   <h2>Orders</h2>
 
   <div className="simulate-orders-wrapper">
-    <button className="simulate-orders-btn" onClick={handleSimulateOrders}>
-      Simulate Orders
-    </button>
-    <button className="delete-all-orders-btn" onClick={handleDeleteAllOrders}>
-      Delete All Orders
-    </button>
-    {showOrderMessage && <div className="order-message">{orderMessage}</div>}
-  </div>
+  <button className="simulate-orders-btn" onClick={handleSimulateOrders}>
+    Simulate Orders
+  </button>
+
+  <button className="delete-all-orders-btn" onClick={handleDeleteAllOrders}>
+    Delete All Orders
+  </button>
+
+  {/* Search */}
+  <div className={`search-container ${searchOpen ? 'active' : ''}`}>
+  <button className="search-toggle-btn" onClick={() => setSearchOpen(!searchOpen)}>
+    🔍
+  </button>
+  <input
+    type="text"
+    placeholder="Search Order ID..."
+    value={searchQuery}
+    onChange={e => setSearchQuery(e.target.value)}
+    className="search-input"
+  />
+</div>
+
+
+  {showOrderMessage && <div className="order-message">{orderMessage}</div>}
+</div>
 
   <div className="orders-table-container">
     <table className="orders-table">
@@ -446,45 +481,47 @@ function Dashboard() {
         </tr>
       </thead>
       <tbody>
-        {orders.length > 0 ? (
-          orders.map(o => (
-            <motion.tr
-              key={o.id}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
+  <AnimatePresence>
+    {filteredOrders.length > 0 ? (
+      filteredOrders.map(o => (
+        <motion.tr
+          key={o.id}
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 10 }}
+          transition={{ duration: 0.3 }}
+        >
+          <td className="order-id">{o.displayId}</td>
+          <td>{o.dateOfOrder ? new Date(o.dateOfOrder).toLocaleDateString() : 'N/A'}</td>
+          <td>{o.product?.name || 'N/A'}</td>
+          <td>{o.amount}</td>
+          <td>{o.total}</td>
+          <td>
+            <motion.span
+              key={o.status}
+              className={`status-badge ${o.status.toLowerCase()}`}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.3 }}
             >
-              <td className="order-id">{o.id}</td>
-              <td>{o.dateOfOrder ? new Date(o.dateOfOrder).toLocaleDateString() : 'N/A'}</td> {/* FIXED */}
-              <td>{o.product?.name || 'N/A'}</td>
-              <td>{o.amount}</td>
-              <td>{o.total}</td>
-              <td>
-                <motion.span
-                  key={o.status}
-                  className={`status-badge ${o.status.toLowerCase()}`}
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {o.status}
-                </motion.span>
-              </td>
-              <td>
-                <button className="edit-btn" onClick={() => openEditOrderModal(o)}>Edit</button>
-                <button className="delete-btn" onClick={() => confirmDeleteOrder(o.id)}>Delete</button>
-              </td>
-            </motion.tr>
-          ))
-        ) : (
-          <tr style={{ height: '100px' }}>
-            <td colSpan="7" style={{ textAlign: 'center', color: '#6b7280', fontStyle: 'italic', fontSize: '1.2em' }}>
-              No Orders Yet
-            </td>
-          </tr>
-        )}
-      </tbody>
+              {o.status}
+            </motion.span>
+          </td>
+          <td>
+            <button className="edit-btn" onClick={() => openEditOrderModal(o)}>Edit</button>
+            <button className="delete-btn" onClick={() => confirmDeleteOrder(o.id)}>Delete</button>
+          </td>
+        </motion.tr>
+      ))
+    ) : (
+      <tr style={{ height: '100px' }}>
+        <td colSpan="7" style={{ textAlign: 'center', color: '#6b7280', fontStyle: 'italic', fontSize: '1.2em' }}>
+          No Orders Found
+        </td>
+      </tr>
+    )}
+  </AnimatePresence>
+</tbody>
     </table>
   </div>
 </section>
@@ -548,30 +585,58 @@ function Dashboard() {
 
 
         {/* Order Edit */}
-        {editOrderModalOpen && orderToEdit && (
-          <motion.div className="edit-modal-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <motion.div className="edit-modal-box" initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 20, opacity: 0 }} transition={{ duration: 0.25 }}>
-              <h3>Edit Order</h3>
-              <div className="modal-divider"></div>
-              <div className="edit-field">
-                <label>Amount:</label>
-                <input type="number" value={orderToEdit.amount} onChange={e => handleEditOrderChange('amount', Number(e.target.value))} />
-              </div>
-              <div className="edit-field">
-                <label>Status:</label>
-                <select value={orderToEdit.status} onChange={e => handleEditOrderChange('status', e.target.value)}>
-                  <option value="Pending">Pending</option>
-                  <option value="Delivered">Delivered</option>
-                  <option value="Cancelled">Cancelled</option>
-                </select>
-              </div>
-              <div className="edit-modal-actions">
-                <button className="cancel-btn modal-btn" onClick={() => setEditOrderModalOpen(false)}>Cancel</button>
-                <button className="save-btn modal-btn" onClick={handleSaveOrderEdit}>Save</button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
+{editOrderModalOpen && orderToEdit && (
+  <motion.div
+    className="edit-modal-overlay"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+  >
+    <motion.div
+      className="edit-modal-box"
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      exit={{ y: 20, opacity: 0 }}
+      transition={{ duration: 0.25 }}
+    >
+      <h3>Edit Order</h3>
+      <div className="modal-divider"></div>
+
+      <div className="edit-field">
+        <label>Amount:</label>
+        <input
+          type="number"
+          value={orderToEdit.amount}
+          readOnly
+        />
+      </div>
+
+      <div className="edit-field">
+        <label>Status:</label>
+        <select
+          value={orderToEdit.status}
+          onChange={e => handleEditOrderChange('status', e.target.value)}
+        >
+          <option value="Pending">Pending</option>
+          <option value="Delivered">Delivered</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
+      </div>
+
+      <div className="edit-modal-actions">
+        <button
+          className="cancel-btn modal-btn"
+          onClick={() => setEditOrderModalOpen(false)}
+        >
+          Cancel
+        </button>
+        <button className="save-btn modal-btn" onClick={handleSaveOrderEdit}>
+          Save
+        </button>
+      </div>
+    </motion.div>
+  </motion.div>
+)}
 
         {/* Order Delete */}
         {deleteOrderModalOpen && (
