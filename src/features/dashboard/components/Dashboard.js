@@ -10,6 +10,9 @@ function Dashboard() {
   const [orders, setOrders] = useState([]);
   const [userEmail, setUserEmail] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [ordersOpen, setOrdersOpen] = useState(true); // default expanded
+  const [productsOpen, setProductsOpen] = useState(true);
+
 
   const [newProduct, setNewProduct] = useState({ name: '', price: '', stock: '' });
   const [productMessage, setProductMessage] = useState('');
@@ -376,164 +379,251 @@ const filteredOrders = orders
 
         {/* Manage Products */}
         <section className="manage-products-section">
-          <h2>Manage Products</h2>
-          <div className={`create-product-form ${formOpen ? 'show' : 'hide'}`}>
-            {formOpen && (
-              <>
-                <input type="text" placeholder="Product Name" value={newProduct.name} onChange={e => setNewProduct({ ...newProduct, name: e.target.value })} />
-                <input 
-  type="number" 
-  step="0.01" 
-  placeholder="Price" 
-  value={newProduct.price} 
-  onChange={e => setNewProduct({ ...newProduct, price: e.target.value })} 
-/>
-                <input type="number" placeholder="Stock" value={newProduct.stock} onChange={e => setNewProduct({ ...newProduct, stock: e.target.value })} />
-              </>
-            )}
-            <button className={`add-product-btn ${formOpen ? 'cancel' : ''}`} onClick={() => setFormOpen(!formOpen)}>
-              {formOpen ? 'Cancel' : 'Add Product'}
-            </button>
-            {formOpen && <button className="create-btn" onClick={handleCreateProduct}>Create</button>}
-            {showMessage && <div className="product-message">{productMessage}</div>}
-          </div>
+  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+    <h2 style={{ margin: 0 }}>Manage Products</h2>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <span style={{ fontSize: '0.9rem', color: '#6b7280', fontStyle: 'italic' }}>
+        Click to {productsOpen ? 'collapse' : 'expand'}
+      </span>
+      <button
+        onClick={() => setProductsOpen(prev => !prev)}
+        style={{
+          background: 'none',
+          border: '1px solid #6b7280',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          fontSize: '1.2rem',
+          width: '30px',
+          height: '30px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+        aria-label={productsOpen ? 'Collapse Products' : 'Expand Products'}
+      >
+        {productsOpen ? '−' : '+'}
+      </button>
+    </div>
+  </div>
 
-          <div className="products-table-container">
-            <table className="products-table">
-              <thead>
-                <tr>
-                  <th>PROD ID</th>
-                  <th>PRODUCT</th>
-                  <th>PRICE (ZAR)</th>
-                  <th>STOCK</th>
-                  <th>ACTIONS</th>
-                </tr>
-              </thead>
-              <tbody>
-  <AnimatePresence>
-    {products.length > 0 ? (
-      products.map(p => (
-        <motion.tr
-          key={p.prodCode}
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 10 }}
-          transition={{ duration: 0.3 }}
-        >
-          <td>{p.prodCode}</td>
-          <td>{p.name}</td>
-          <td>{parseFloat(p.price).toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-          <td>{p.stock}</td>
-          <td>
-            <button className="edit-btn" onClick={() => openEditModal(p)}>Edit</button>
-            <button className="delete-btn" onClick={() => confirmDeleteProduct(p.id)}>Delete</button>
-          </td>
-        </motion.tr>
-      ))
-    ) : (
-      <tr style={{ height: '100px' }}>
-        <td colSpan="5" style={{ textAlign: 'center', color: '#6b7280', fontStyle: 'italic', fontSize: '1.2em' }}>
-          No Products Yet
-        </td>
-      </tr>
+  <AnimatePresence initial={false}>
+    {productsOpen && (
+      <motion.div
+        key="products-content"
+        initial={{ height: 0, opacity: 0 }}
+        animate={{ height: 'auto', opacity: 1 }}
+        exit={{ height: 0, opacity: 0 }}
+        transition={{ duration: 0.3 }}
+        style={{ position: 'relative', zIndex: 1 }}
+      >
+        {/* Put your existing create form and products table here */}
+        <div className={`create-product-form ${formOpen ? 'show' : 'hide'}`}>
+          {formOpen && (
+            <>
+              <input type="text" placeholder="Product Name" value={newProduct.name} onChange={e => setNewProduct({ ...newProduct, name: e.target.value })} />
+              <input 
+                type="number" 
+                step="0.01" 
+                placeholder="Price" 
+                value={newProduct.price} 
+                onChange={e => setNewProduct({ ...newProduct, price: e.target.value })} 
+              />
+              <input type="number" placeholder="Stock" value={newProduct.stock} onChange={e => setNewProduct({ ...newProduct, stock: e.target.value })} />
+            </>
+          )}
+          <button className={`add-product-btn ${formOpen ? 'cancel' : ''}`} onClick={() => setFormOpen(!formOpen)}>
+            {formOpen ? 'Cancel' : 'Add Product'}
+          </button>
+          {formOpen && <button className="create-btn" onClick={handleCreateProduct}>Create</button>}
+          {showMessage && <div className="product-message">{productMessage}</div>}
+        </div>
+
+        <div className="products-table-container">
+          <table className="products-table">
+            <thead>
+              <tr>
+                <th>PROD ID</th>
+                <th>PRODUCT</th>
+                <th>PRICE (ZAR)</th>
+                <th>STOCK</th>
+                <th>ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <AnimatePresence>
+                {products.length > 0 ? (
+                  products.map(p => (
+                    <motion.tr
+                      key={p.prodCode}
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <td>{p.prodCode}</td>
+                      <td>{p.name}</td>
+                      <td>{parseFloat(p.price).toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                      <td>{p.stock}</td>
+                      <td>
+                        <button className="edit-btn" onClick={() => openEditModal(p)}>Edit</button>
+                        <button className="delete-btn" onClick={() => confirmDeleteProduct(p.id)}>Delete</button>
+                      </td>
+                    </motion.tr>
+                  ))
+                ) : (
+                  <tr style={{ height: '100px' }}>
+                    <td colSpan="5" style={{ textAlign: 'center', color: '#6b7280', fontStyle: 'italic', fontSize: '1.2em' }}>
+                      No Products Yet
+                    </td>
+                  </tr>
+                )}
+              </AnimatePresence>
+            </tbody>
+          </table>
+        </div>
+      </motion.div>
     )}
   </AnimatePresence>
-</tbody>
+</section>
 
-            </table>
-          </div>
-        </section>
+
 
         {/* Orders Section */}
-<section className="orders-section">
-  <h2>Orders</h2>
+<section className="orders-section" style={{ position: 'relative' }}>
+  {/* Header with button and indicator */}
+  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem', zIndex: 2, position: 'relative' }}>
+    <h2 style={{ margin: 0 }}>Orders</h2>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <span style={{ fontSize: '0.9rem', color: '#6b7280', fontStyle: 'italic' }}>
+        Click to {ordersOpen ? 'collapse' : 'expand'}
+      </span>
+      <button
+        onClick={() => setOrdersOpen(prev => !prev)}
+        style={{
+          background: 'none',
+          border: '1px solid #6b7280',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          fontSize: '1.2rem',
+          width: '30px',
+          height: '30px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 3,
+          position: 'relative'
+        }}
+        aria-label={ordersOpen ? 'Collapse Orders' : 'Expand Orders'}
+      >
+        {ordersOpen ? '−' : '+'}
+      </button>
+    </div>
+  </div>
 
-  <div className="simulate-orders-wrapper">
-  <button className="simulate-orders-btn" onClick={handleSimulateOrders}>
-    Simulate Orders
-  </button>
+  {/* Messages outside collapsible so they’re always visible */}
+  {showOrderMessage && (
+    <div className="order-message" style={{ position: 'relative', zIndex: 3 }}>
+      {orderMessage}
+    </div>
+  )}
 
-  <button className="delete-all-orders-btn" onClick={handleDeleteAllOrders}>
-    Delete All Orders
-  </button>
+  {/* Collapsible content */}
+  <AnimatePresence initial={false}>
+    {ordersOpen && (
+      <motion.div
+        key="orders-content"
+        initial={{ height: 0, opacity: 0 }}
+        animate={{ height: 'auto', opacity: 1 }}
+        exit={{ height: 0, opacity: 0 }}
+        transition={{ duration: 0.3 }}
+        style={{ position: 'relative', zIndex: 1 }}
+      >
+        <div className="simulate-orders-wrapper">
+          <button className="simulate-orders-btn" onClick={handleSimulateOrders}>
+            Simulate Orders
+          </button>
+          <button className="delete-all-orders-btn" onClick={handleDeleteAllOrders}>
+            Delete All Orders
+          </button>
 
-  {/* Search */}
-  <div className={`search-container ${searchOpen ? 'active' : ''}`}>
-  <button className="search-toggle-btn" onClick={() => setSearchOpen(!searchOpen)}>
-    🔍
-  </button>
-  <input
-    type="text"
-    placeholder="Search Order ID..."
-    value={searchQuery}
-    onChange={e => setSearchQuery(e.target.value)}
-    className="search-input"
-  />
-</div>
+          <div className={`search-container ${searchOpen ? 'active' : ''}`}>
+            <button className="search-toggle-btn" onClick={() => setSearchOpen(!searchOpen)}>
+              🔍
+            </button>
+            <input
+              type="text"
+              placeholder="Search Order ID..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              className="search-input"
+            />
+          </div>
+        </div>
 
-
-  {showOrderMessage && <div className="order-message">{orderMessage}</div>}
-</div>
-
-  <div className="orders-table-container">
-    <table className="orders-table">
-      <thead>
-        <tr>
-          <th>ORDER ID</th>
-          <th>DATE OF ORDER</th>
-          <th>PRODUCT</th>
-          <th>AMOUNT</th>
-          <th>TOTAL (ZAR)</th>
-          <th>STATUS</th>
-          <th>ACTIONS</th>
-        </tr>
-      </thead>
-      <tbody>
-  <AnimatePresence>
-    {filteredOrders.length > 0 ? (
-      filteredOrders.map(o => (
-        <motion.tr
-          key={o.id}
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 10 }}
-          transition={{ duration: 0.3 }}
-        >
-          <td className="order-id">{o.displayId}</td>
-          <td>{o.dateOfOrder ? new Date(o.dateOfOrder).toLocaleDateString() : 'N/A'}</td>
-          <td>{o.product?.name || 'N/A'}</td>
-          <td>{o.amount}</td>
-          <td>{parseFloat(o.total).toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-
-          <td>
-            <motion.span
-              key={o.status}
-              className={`status-badge ${o.status.toLowerCase()}`}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              {o.status}
-            </motion.span>
-          </td>
-          <td>
-            <button className="edit-btn" onClick={() => openEditOrderModal(o)}>Edit</button>
-            <button className="delete-btn" onClick={() => confirmDeleteOrder(o.id)}>Delete</button>
-          </td>
-        </motion.tr>
-      ))
-    ) : (
-      <tr style={{ height: '100px' }}>
-        <td colSpan="7" style={{ textAlign: 'center', color: '#6b7280', fontStyle: 'italic', fontSize: '1.2em' }}>
-          No Orders Found
-        </td>
-      </tr>
+        <div className="orders-table-container">
+          <table className="orders-table">
+            <thead>
+              <tr>
+                <th>ORDER ID</th>
+                <th>DATE OF ORDER</th>
+                <th>PRODUCT</th>
+                <th>AMOUNT</th>
+                <th>TOTAL (ZAR)</th>
+                <th>STATUS</th>
+                <th>ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <AnimatePresence>
+                {filteredOrders.length > 0 ? (
+                  filteredOrders.map(o => (
+                    <motion.tr
+                      key={o.id}
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <td className="order-id">{o.displayId}</td>
+                      <td>{o.dateOfOrder ? new Date(o.dateOfOrder).toLocaleDateString() : 'N/A'}</td>
+                      <td>{o.product?.name || 'N/A'}</td>
+                      <td>{o.amount}</td>
+                      <td>{parseFloat(o.total).toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                      <td>
+                        <motion.span
+                          key={o.status}
+                          className={`status-badge ${o.status.toLowerCase()}`}
+                          initial={{ scale: 0.8, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          {o.status}
+                        </motion.span>
+                      </td>
+                      <td>
+                        <button className="edit-btn" onClick={() => openEditOrderModal(o)}>Edit</button>
+                        <button className="delete-btn" onClick={() => confirmDeleteOrder(o.id)}>Delete</button>
+                      </td>
+                    </motion.tr>
+                  ))
+                ) : (
+                  <tr style={{ height: '100px' }}>
+                    <td colSpan="7" style={{ textAlign: 'center', color: '#6b7280', fontStyle: 'italic', fontSize: '1.2em' }}>
+                      No Orders Found
+                    </td>
+                  </tr>
+                )}
+              </AnimatePresence>
+            </tbody>
+          </table>
+        </div>
+      </motion.div>
     )}
   </AnimatePresence>
-</tbody>
-    </table>
-  </div>
 </section>
+
+
+
 
       </div>
 

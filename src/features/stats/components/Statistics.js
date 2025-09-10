@@ -190,7 +190,21 @@ const COLORS = generateShades('00b894', topProductsData.length);
           </PieChart>
         </ResponsiveContainer>
       ) : (
-        <p style={{ color: '#6b7280', fontStyle: 'italic' }}>No sales data yet.</p>
+        <div style={{ 
+  display: 'flex', 
+  justifyContent: 'center', 
+  alignItems: 'center', 
+  height: '300px'  // adjust height to match your chart area
+}}>
+  <p style={{ 
+    color: '#6b7280', 
+    fontStyle: 'italic', 
+    fontSize: '1.2rem', 
+    textAlign: 'center' 
+  }}>
+    No Sales Data Available
+  </p>
+</div>
       )}
     </div>
   </div>
