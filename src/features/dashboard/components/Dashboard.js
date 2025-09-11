@@ -47,6 +47,7 @@ function Dashboard() {
   const [isSimulatingOrders, setIsSimulatingOrders] = useState(false);
   const [isDeletingOrders, setIsDeletingOrders] = useState(false);
 
+  const API_URL = process.env.REACT_APP_API_URL;
 
   const [users, setUsers] = useState([]);
 
@@ -65,7 +66,7 @@ function Dashboard() {
   setUserEmail(user.email);
 
   // Fetch products
-  fetch(`http://localhost:8080/api/products?userId=${user.userId}`)
+  fetch(`${API_URL}/products?userId=${user.userId}`)
     .then(res => res.json())
     .then(data => {
       const productsWithCode = data.map((p, index) => ({
@@ -77,7 +78,7 @@ function Dashboard() {
     .catch(err => console.error(err));
 
   // Fetch orders
-  fetch(`http://localhost:8080/api/orders?userId=${user.userId}`)
+  fetch(`${API_URL}/orders?userId=${user.userId}`)
     .then(res => res.json())
     .then(data => setOrders(data))
     .catch(err => console.error(err));
@@ -116,7 +117,7 @@ function Dashboard() {
         userId: user.userId 
       };
 
-      fetch('http://localhost:8080/api/products', {
+      fetch(`${API_URL}/products`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(productToSend)
@@ -153,7 +154,7 @@ function Dashboard() {
   };
 
   const handleDeleteProduct = () => {
-    fetch(`http://localhost:8080/api/products/${productToDelete}`, { method: 'DELETE' })
+    fetch(`${API_URL}/products/${productToDelete}`, { method: 'DELETE' })
       .then(async res => {
         if (!res.ok) {
           const errorData = await res.json().catch(() => null);
@@ -182,7 +183,7 @@ function Dashboard() {
     for (const order of orders) {
       let res;
       try {
-        res = await fetch(`http://localhost:8080/api/orders/${order.id}`, {
+        res = await fetch(`${API_URL}/orders/${order.id}`, {
           method: 'DELETE',
         });
       } catch (err) {
@@ -242,7 +243,7 @@ function Dashboard() {
     price: parseFloat(productToEdit.price).toFixed(2)
   };
 
-  fetch(`http://localhost:8080/api/products/${productToEdit.id}`, {
+  fetch(`${API_URL}/products/${productToEdit.id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(editedProductToSend) // <-- send this instead of productToEdit
@@ -293,7 +294,7 @@ function Dashboard() {
           userId: user.userId,
         };
 
-        const res = await fetch("http://localhost:8080/api/orders", {
+        const res = await fetch(`${API_URL}/orders`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(order),
@@ -348,7 +349,7 @@ function Dashboard() {
 
   const handleDeleteOrder = async () => {
   try {
-    const res = await fetch(`http://localhost:8080/api/orders/${orderToDelete}`, {
+    const res = await fetch(`${API_URL}/orders/${orderToDelete}`, {
       method: 'DELETE',
     });
 

@@ -20,6 +20,8 @@ const NormalAuth = () => {
 
   const navigate = useNavigate();
 
+  const API_URL = process.env.REACT_APP_API_URL;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage('');
@@ -43,7 +45,7 @@ const NormalAuth = () => {
 
       if (!isLogin) {
         // Sign Up
-        response = await fetch('http://localhost:8080/api/users/signup', {
+        response = await fetch(`${API_URL}/users/signup`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name: 'User', email, password }),
@@ -64,7 +66,7 @@ const NormalAuth = () => {
         }, 1000); // 1 second delay before showing success message
       } else {
         // Login
-        response = await fetch('http://localhost:8080/api/users/login', {
+        response = await fetch(`${API_URL}/users/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password }),

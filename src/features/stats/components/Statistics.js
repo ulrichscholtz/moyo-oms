@@ -10,6 +10,7 @@ function Statistics() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
+  const API_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('loggedInUser'));
@@ -19,13 +20,13 @@ function Statistics() {
     }
 
     // Fetch products
-    fetch(`http://localhost:8080/api/products?userId=${user.userId}`)
+    fetch(`${API_URL}/products?userId=${user.userId}`)
       .then(res => res.json())
       .then(data => setProducts(data))
       .catch(err => console.error(err));
 
     // Fetch orders safely
-    fetch(`http://localhost:8080/api/orders?userId=${user.userId}`)
+    fetch(`${API_URL}/orders?userId=${user.userId}`)
       .then(res => res.json())
       .then(data => {
         const safeOrders = data.map(o => ({
