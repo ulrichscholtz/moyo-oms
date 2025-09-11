@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { PieChart, Pie, Cell } from 'recharts';
+import { MdOutlineDashboard } from "react-icons/md";
+import { FaChartBar } from "react-icons/fa";
+import { FiMenu, FiSettings, FiLogOut, FiShoppingBag, FiPieChart } from "react-icons/fi";
 
 function Statistics() {
   const navigate = useNavigate();
@@ -110,18 +113,19 @@ const COLORS = generateShades('00b894', topProductsData.length);
         {sidebarOpen ? '⟨' : '⟩'}
       </button>
 
+      {/* Sidebar */}
       <aside className="dashboard-sidebar" style={{ display: sidebarOpen ? 'block' : 'none' }}>
-        <h2>Menu</h2>
+        <h2><FiMenu />Menu</h2>
         <ul>
-          <li onClick={() => navigate('/dashboard')} style={{ cursor: 'pointer' }}>Dashboard</li>
-          <li onClick={() => navigate('/statistics')} style={{ cursor: 'pointer' }}>Statistics</li>
-          <li>Settings</li>
-          <li onClick={handleLogout}>Logout</li>
+          <li onClick={() => navigate('/dashboard')} style={{ cursor: 'pointer' }}><MdOutlineDashboard />Dashboard</li>
+          <li onClick={() => navigate('/statistics')} style={{ cursor: 'pointer' }}><FaChartBar />Statistics</li>
+          <li><FiSettings />Settings</li>
+          <li onClick={handleLogout}><FiLogOut />Logout</li>
         </ul>
       </aside>
 
       <div className="dashboard-main" style={{ marginLeft: sidebarOpen ? 220 : 0, transition: 'margin-left 0.2s' }}>
-        <h1 className="dashboard-title">Statistics</h1>
+        <h1 className="dashboard-title"><FiPieChart style={{ marginRight: '8px', verticalAlign: 'middle' }} />Statistics</h1>
         <div className="dashboard-subtitle">Overview of your products and orders (last 30 days)</div>
 
         <div className="stats-cards">
