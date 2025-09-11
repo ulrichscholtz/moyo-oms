@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getAllUsers } from "../../../services/api";
 import { MdOutlineDashboard } from "react-icons/md";
 import { FaChartBar } from "react-icons/fa";
-import { FiChevronLeft, FiChevronRight, FiMenu, FiSettings, FiLogOut, FiShoppingCart } from "react-icons/fi";
+import { FiChevronLeft, FiChevronRight, FiMenu, FiSettings, FiLogOut, FiShoppingCart, FiSearch } from "react-icons/fi";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -597,7 +597,8 @@ const filteredOrders = orders
               className="search-toggle-btn"
               onClick={() => setSearchModalOpen(true)}
             >
-              🔍
+              <FiSearch style={{ fontSize: '25px', color: '#00b894' }} />
+
             </button>
                     
             </div>
