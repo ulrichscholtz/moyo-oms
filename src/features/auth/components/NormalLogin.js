@@ -15,52 +15,64 @@ const NormalAuth = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+  // Loading state for button
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage('');
     setSuccessMessage('');
+    setLoading(true); // Show loading spinner
 
     if (!email || !password || (!isLogin && !confirmPassword)) {
       setErrorMessage('Please fill in all fields.');
+      setLoading(false); // Hide loading spinner
       return;
     }
 
     if (!isLogin && password !== confirmPassword) {
       setErrorMessage('Passwords do not match.');
+      setLoading(false); // Hide loading spinner
       return;
     }
 
     try {
+      let response;
+
       if (!isLogin) {
         // Sign Up
-        const response = await fetch('http://localhost:8080/api/users/signup', {
+        response = await fetch('http://localhost:8080/api/users/signup', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: 'User', email, password })
+          body: JSON.stringify({ name: 'User', email, password }),
         });
 
         if (!response.ok) {
           setErrorMessage('Signup failed.');
+          setLoading(false); // Hide loading spinner
           return;
         }
 
-        // Signup successful: show success message
-        setSuccessMessage('Signup successful!');
+        // Simulate a delay before success message
         setTimeout(() => {
-          window.location.reload();
-        }, 3000); // 3 seconds delay
+          setSuccessMessage('Signup successful!');
+          setTimeout(() => {
+            window.location.reload();
+          }, 3000); // 3 seconds delay before page reload
+        }, 1000); // 1 second delay before showing success message
       } else {
         // Login
-        const response = await fetch('http://localhost:8080/api/users/login', {
+        response = await fetch('http://localhost:8080/api/users/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
+          body: JSON.stringify({ email, password }),
         });
 
         if (!response.ok) {
-          setErrorMessage('Invalid Email or Password'); // generic error
+          setErrorMessage('Invalid Email or Password');
+          setLoading(false); // Hide loading spinner
           return;
         }
 
@@ -68,10 +80,14 @@ const NormalAuth = () => {
         // Save user info to localStorage
         localStorage.setItem('loggedInUser', JSON.stringify(data));
 
-        navigate('/dashboard');
+        // Simulate a delay before navigating
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 1000); // 1 second delay before navigating
       }
     } catch (error) {
       setErrorMessage('Something went wrong. Please try again.');
+      setLoading(false); // Hide loading spinner
       console.error(error);
     }
   };
@@ -143,9 +159,14 @@ const NormalAuth = () => {
           </div>
         )}
 
-        <button type="submit" className="primary-button">
-          {isLogin ? 'Login' : 'Sign Up'}
-        </button>
+        <button type="submit" className="primary-button" disabled={loading}>
+  {loading ? (
+    <span className="spinner"></span> // This is the spinner
+  ) : (
+    isLogin ? 'Login' : 'Sign Up'
+  )}
+</button>
+
       </form>
 
       {/* Messages below form */}

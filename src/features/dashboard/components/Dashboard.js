@@ -26,6 +26,7 @@ function Dashboard() {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [productToEdit, setProductToEdit] = useState(null);
 
+
   const [deleteErrorModalOpen, setDeleteErrorModalOpen] = useState(false);
   const [deleteErrorMessage, setDeleteErrorMessage] = useState('');
 
@@ -34,14 +35,21 @@ function Dashboard() {
   const [orderToEdit, setOrderToEdit] = useState(null);
   const [deleteOrderModalOpen, setDeleteOrderModalOpen] = useState(false);
   const [orderToDelete, setOrderToDelete] = useState(null);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
   const [orderMessage, setOrderMessage] = useState('');
   const [showOrderMessage, setShowOrderMessage] = useState(false);
 
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const [isCreatingProduct, setIsCreatingProduct] = useState(false);
+  const [isSimulatingOrders, setIsSimulatingOrders] = useState(false);
+  const [isDeletingOrders, setIsDeletingOrders] = useState(false);
+
 
   const [users, setUsers] = useState([]);
+
   useEffect(() => {
     getAllUsers()
       .then(setUsers)
@@ -87,45 +95,57 @@ function Dashboard() {
 
   // ----- PRODUCT HANDLERS -----
   const handleCreateProduct = () => {
-  const user = JSON.parse(localStorage.getItem('loggedInUser'));
-  if (!user) return;
+    const user = JSON.parse(localStorage.getItem('loggedInUser'));
+    if (!user) return;
 
-  if (!newProduct.name || !newProduct.price || !newProduct.stock) {
-    setProductMessage('Please fill in all product fields.');
-    setShowMessage(true);
-    setTimeout(() => setShowMessage(false), 3000);
-    return;
-  }
+    if (!newProduct.name || !newProduct.price || !newProduct.stock) {
+      setProductMessage('Please fill in all product fields.');
+      setShowMessage(true);
+      setTimeout(() => setShowMessage(false), 3000);
+      return;
+    }
 
-  const productToSend = { ...newProduct, price: parseFloat(newProduct.price).toFixed(2), userId: user.userId };
+    // Start loading
+    setIsCreatingProduct(true);
 
-  fetch('http://localhost:8080/api/products', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(productToSend)
-  })
-    .then(res => res.json())
-    .then(created => {
-      // Assign a fixed PROD code based on current number of products
-      const newProductWithCode = {
-        ...created,
-        prodCode: `PROD-${String(products.length + 1).padStart(4, '0')}`
+    // Delay by 4 seconds before API call
+    setTimeout(() => {
+      const productToSend = { 
+        ...newProduct, 
+        price: parseFloat(newProduct.price).toFixed(2), 
+        userId: user.userId 
       };
 
-      setProducts([...products, newProductWithCode]);
-      setNewProduct({ name: '', price: '', stock: '' });
-      setProductMessage('Product added successfully!');
-      setShowMessage(true);
-      setTimeout(() => setShowMessage(false), 3000);
-      setFormOpen(false);
-    })
-    .catch(err => {
-      console.error(err);
-      setProductMessage('Failed to add product. Try again.');
-      setShowMessage(true);
-      setTimeout(() => setShowMessage(false), 3000);
-    });
-};
+      fetch('http://localhost:8080/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(productToSend)
+      })
+        .then(res => res.json())
+        .then(created => {
+          const newProductWithCode = {
+            ...created,
+            prodCode: `PROD-${String(products.length + 1).padStart(4, '0')}`
+          };
+
+          setProducts([...products, newProductWithCode]);
+          setNewProduct({ name: '', price: '', stock: '' });
+          setProductMessage('Product added successfully!');
+          setShowMessage(true);
+          setTimeout(() => setShowMessage(false), 3000);
+          setFormOpen(false);
+        })
+        .catch(err => {
+          console.error(err);
+          setProductMessage('Failed to add product. Try again.');
+          setShowMessage(true);
+          setTimeout(() => setShowMessage(false), 3000);
+        })
+        .finally(() => {
+          setIsCreatingProduct(false);
+        });
+    }, 5000);
+  };
 
   const confirmDeleteProduct = (productId) => {
     setProductToDelete(productId);
@@ -185,7 +205,7 @@ function Dashboard() {
             : p
         )
       );
-    }
+    };
 
     // Clear all orders from state after deletion
     setOrders([]);
@@ -197,7 +217,7 @@ function Dashboard() {
     console.error("Error deleting all orders:", err);
     alert("Error deleting all orders. Try again.");
   }
-};
+  }
 
   const openEditModal = (product) => {
   setProductToEdit({ ...product }); // keep displayId from state
@@ -206,6 +226,12 @@ function Dashboard() {
 
   const handleEditChange = (field, value) => {
     setProductToEdit(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSearch = () => {
+    console.log("Searching for Order ID:", searchQuery);
+    // You can call your API or filter function here
+    setSearchModalOpen(false); // close modal after search
   };
 
 
@@ -232,7 +258,7 @@ function Dashboard() {
 
   // ----- ORDER HANDLERS -----
   const handleSimulateOrders = async () => {
-  const user = JSON.parse(localStorage.getItem('loggedInUser'));
+  const user = JSON.parse(localStorage.getItem("loggedInUser"));
   if (!user) return;
 
   if (products.length === 0 || products.every(p => p.stock === 0)) {
@@ -242,61 +268,63 @@ function Dashboard() {
     return;
   }
 
-  const statuses = ["Pending", "Delivered", "Cancelled"];
-  const ordersToSimulate = [];
+  setIsSimulatingOrders(true);
 
-  // Generate 3 simulated orders
-  for (let i = 0; i < 3; i++) {
-    const availableProducts = products.filter(p => p.stock > 0);
-    if (availableProducts.length === 0) break; // No stock left
+  setTimeout(async () => {
+    try {
+      const statuses = ["Pending", "Delivered", "Cancelled"];
+      const ordersToSimulate = [];
+      const createdOrders = [];
 
-    const randomProduct = availableProducts[Math.floor(Math.random() * availableProducts.length)];
-    const maxAmount = Math.min(5, randomProduct.stock); // Cannot order more than stock
-    const randomAmount = Math.floor(Math.random() * maxAmount) + 1;
-    const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+      for (let i = 0; i < 3; i++) {
+        const availableProducts = products.filter(p => p.stock > 0);
+        if (availableProducts.length === 0) break;
 
-    ordersToSimulate.push({
-      productId: randomProduct.id,
-      amount: randomAmount,
-      status: randomStatus,
-      userId: user.userId
-    });
-  }
+        const randomProduct =
+          availableProducts[Math.floor(Math.random() * availableProducts.length)];
+        const maxAmount = Math.min(5, randomProduct.stock);
+        const randomAmount = Math.floor(Math.random() * maxAmount) + 1;
+        const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
 
-  try {
-    const createdOrders = [];
+        const order = {
+          productId: randomProduct.id,
+          amount: randomAmount,
+          status: randomStatus,
+          userId: user.userId,
+        };
 
-    for (const order of ordersToSimulate) {
-      const res = await fetch('http://localhost:8080/api/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(order)
-      });
+        const res = await fetch("http://localhost:8080/api/orders", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(order),
+        });
 
-      if (!res.ok) throw new Error('Failed to create order');
+        if (!res.ok) throw new Error("Failed to create order");
 
-      const createdOrder = await res.json();
-      createdOrders.push(createdOrder);
+        const createdOrder = await res.json();
+        createdOrders.push(createdOrder);
 
-      // Update product stock in state
-      setProducts(prev =>
-        prev.map(p =>
-          p.id === createdOrder.product.id
-            ? { ...p, stock: p.stock - createdOrder.amount }
-            : p
-        )
-      );
+        setProducts(prev =>
+          prev.map(p =>
+            p.id === createdOrder.product.id
+              ? { ...p, stock: p.stock - createdOrder.amount }
+              : p
+          )
+        );
+      }
+
+      setOrders(prev => [...prev, ...createdOrders]);
+    } catch (err) {
+      console.error(err);
+      setOrderMessage("Error simulating orders. Try again.");
+      setShowOrderMessage(true);
+      setTimeout(() => setShowOrderMessage(false), 3000);
+    } finally {
+      setIsSimulatingOrders(false);
     }
-
-    setOrders(prev => [...prev, ...createdOrders]);
-
-  } catch (err) {
-    console.error(err);
-    setOrderMessage("Error simulating orders. Try again.");
-    setShowOrderMessage(true);
-    setTimeout(() => setShowOrderMessage(false), 3000);
-  }
+  }, 4000); // ⏳ delay
 };
+
 
   const openEditOrderModal = (order) => {
     setOrderToEdit({ ...order });
@@ -354,6 +382,8 @@ const filteredOrders = orders
       o.status.toLowerCase().includes(query)
     );
   });
+
+  
 
   return (
     <div className="dashboard-container">
@@ -443,6 +473,13 @@ const filteredOrders = orders
             {formOpen ? 'Cancel' : 'Add Product'}
           </button>
           {formOpen && <button className="create-btn" onClick={handleCreateProduct}>Create</button>}
+          {isCreatingProduct && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-300">
+          <div className="bg-white p-6 rounded-2xl shadow-lg flex flex-col items-center">
+            <div className="spinner"></div>
+          </div>
+        </div>
+      )}
           {showMessage && <div className="product-message">{productMessage}</div>}
         </div>
 
@@ -528,13 +565,6 @@ const filteredOrders = orders
     </div>
   </div>
 
-  {/* Messages outside collapsible so they’re always visible */}
-  {showOrderMessage && (
-    <div className="order-message" style={{ position: 'relative', zIndex: 3 }}>
-      {orderMessage}
-    </div>
-  )}
-
   {/* Collapsible content */}
   <AnimatePresence initial={false}>
     {ordersOpen && (
@@ -554,19 +584,23 @@ const filteredOrders = orders
             Delete All Orders
           </button>
 
-          <div className={`search-container ${searchOpen ? 'active' : ''}`}>
-            <button className="search-toggle-btn" onClick={() => setSearchOpen(!searchOpen)}>
+          <div className={`search-container ${searchModalOpen ? "active" : ""}`}>
+            <button
+              className="search-toggle-btn"
+              onClick={() => setSearchModalOpen(true)}
+            >
               🔍
             </button>
-            <input
-              type="text"
-              placeholder="Search Order ID..."
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              className="search-input"
-            />
+                    
+            </div>
+            {isSimulatingOrders && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-300">
+          <div className="bg-white p-6 rounded-2xl shadow-lg flex flex-col items-center">
+            <div className="spinner"></div>
           </div>
         </div>
+      )}
+          </div>
 
         <div className="orders-table-container">
           <table className="orders-table">
@@ -636,6 +670,50 @@ const filteredOrders = orders
       </div>
 
       {/* ----- MODALS ----- */}
+
+      {/* Search Modal */}
+      <AnimatePresence>
+        {searchModalOpen && (
+          <motion.div
+            className="search-modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="search-modal-box"
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 20, opacity: 0 }}
+              transition={{ duration: 0.25 }}
+            >
+              <h3>Search by Order ID</h3>
+              <div className="modal-divider"></div>
+
+              <div className="search-field">
+                <input
+                  type="text"
+                  placeholder="Enter Order ID..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+
+              <div className="search-modal-actions">
+                <button
+                  className="cancel-btn modal-btn"
+                  onClick={() => setSearchModalOpen(false)}
+                >
+                  Cancel
+                </button>
+                <button className="save-btn modal-btn" onClick={handleSearch}>
+                  Search
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       
         {/* Product Delete */}
         {deleteModalOpen && (
@@ -758,6 +836,7 @@ const filteredOrders = orders
             </motion.div>
           </motion.div>
         )}
+
     </div>
   );
 }

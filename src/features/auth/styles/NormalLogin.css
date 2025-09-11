@@ -217,3 +217,40 @@
   .input-group input { font-size: 15px; padding: 12px 10px 8px 10px; }
   .primary-button, .back-button { font-size: 15px; padding: 12px 0; max-width: 100%; }
 }
+
+/* Spinner styles */
+.spinner {
+  border: 2px solid #f3f3f3; /* Light gray border */
+  border-top: 2px solid #34d5db; /* Blue border */
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+  margin-right: 8px; /* Add some spacing between the spinner and the button text */
+  display: inline-block; /* Ensure spinner stays inline with the text */
+}
+
+/* Spinner animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Ensure button text and spinner are aligned properly */
+.primary-button {
+  display: flex;
+  align-items: center; /* Align the spinner and text horizontally */
+  justify-content: center; /* Center the content */
+  padding: 10px 20px;
+  background-color: #40E0D0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.primary-button:disabled {
+  background-color: #ddd; /* Gray background when disabled */
+  cursor: not-allowed;
+}
+

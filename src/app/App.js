@@ -8,13 +8,6 @@ import { useEffect, useState } from 'react';
 import { getData } from '../services/api';
 
 function TitleScreen() {
-  const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    getData()
-      .then(setMessage)
-      .catch((err) => console.error("API error:", err));
-  }, []);
 
   return (
     <div className="title-screen-bg">
@@ -23,7 +16,6 @@ function TitleScreen() {
           <span className="moyo-title">MOYO</span> Case Study Solution
         </h1>
         <p className="title-screen-desc">By Ulrich Scholtz</p>
-        <p className="title-screen-api-msg">{message}</p> {/* backend response */}
         <Link to="/login" className="title-screen-btn">
           Review
         </Link>
