@@ -61,7 +61,7 @@ const NormalAuth = () => {
         setTimeout(() => {
           setSuccessMessage('Signup successful!');
           setTimeout(() => {
-            window.location.reload();
+            navigate('/login');
           }, 3000); // 3 seconds delay before page reload
         }, 1000); // 1 second delay before showing success message
       } else {
