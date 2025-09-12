@@ -49,6 +49,9 @@ function Dashboard() {
   const [isSimulatingOrders, setIsSimulatingOrders] = useState(false);
   const [isDeletingOrders, setIsDeletingOrders] = useState(false);
 
+  const [loadingProducts, setLoadingProducts] = useState(true);
+  const [loadingOrders, setLoadingOrders] = useState(true);
+
   const API_URL = process.env.REACT_APP_API_URL;
 
   const [users, setUsers] = useState([]);
@@ -68,24 +71,49 @@ function Dashboard() {
   setUserEmail(user.email);
 
   // Fetch products
-  fetch(`${API_URL}/products?userId=${user.userId}`)
-    .then(res => res.json())
-    .then(data => {
-      const productsWithCode = data.map((p, index) => ({
-        ...p,
-        prodCode: `PROD-${String(index + 1).padStart(4, '0')}`
-      }));
+// Start loading
+setLoadingProducts(true);
+
+fetch(`${API_URL}/products?userId=${user.userId}`)
+  .then(res => res.json())
+  .then(data => {
+    const productsWithCode = data.map((p, index) => ({
+      ...p,
+      prodCode: `PROD-${String(index + 1).padStart(4, '0')}`
+    }));
+
+    // Intentional 2-second wait before updating content
+    setTimeout(() => {
       setProducts(productsWithCode);
-    })
-    .catch(err => console.error(err));
+      setLoadingProducts(false); // spinner disappears first
+    }, 2000);
+  })
+  .catch(err => {
+    console.error(err);
+    // Also respect the 2-second delay on error if you want
+    setTimeout(() => setLoadingProducts(false), 2000);
+  });
 
-  // Fetch orders
-  fetch(`${API_URL}/orders?userId=${user.userId}`)
-    .then(res => res.json())
-    .then(data => setOrders(data))
-    .catch(err => console.error(err));
 
-}, [navigate]);
+
+  // Start loading
+setLoadingOrders(true);
+
+fetch(`${API_URL}/orders?userId=${user.userId}`)
+  .then(res => res.json())
+  .then(data => {
+    // Wait 2 seconds before setting the orders
+    setTimeout(() => {
+      setOrders(data);
+      setLoadingOrders(false); // hide spinner after delay
+    }, 2000);
+  })
+  .catch(err => {
+    console.error(err);
+    // Hide spinner even if there's an error, after 2 seconds
+    setTimeout(() => setLoadingOrders(false), 2000);
+  });
+}, [navigate, API_URL]);
 
   const toggleSidebar = () => setSidebarOpen(open => !open);
 
@@ -502,36 +530,44 @@ const filteredOrders = orders
                 <th>ACTIONS</th>
               </tr>
             </thead>
-            <tbody>
-              <AnimatePresence>
-                {products.length > 0 ? (
-                  products.map(p => (
-                    <motion.tr
-                      key={p.prodCode}
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <td>{p.prodCode}</td>
-                      <td>{p.name}</td>
-                      <td>{parseFloat(p.price).toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                      <td>{p.stock}</td>
-                      <td>
-                        <button className="edit-btn" onClick={() => openEditModal(p)}>Edit</button>
-                        <button className="delete-btn" onClick={() => confirmDeleteProduct(p.id)}>Delete</button>
-                      </td>
-                    </motion.tr>
-                  ))
-                ) : (
-                  <tr style={{ height: '100px' }}>
-                    <td colSpan="5" style={{ textAlign: 'center', color: '#6b7280', fontStyle: 'italic', fontSize: '1.2em' }}>
-                      No Products Yet
-                    </td>
-                  </tr>
-                )}
-              </AnimatePresence>
-            </tbody>
+  <tbody>
+  <AnimatePresence>
+    {loadingProducts ? (
+      <tr>
+        <td colSpan="5" style={{ textAlign: 'center', padding: '40px 0' }}>
+          <div className="spinner-container">
+          <div className="spinner2"></div>
+          </div>
+        </td>
+      </tr>
+    ) : products.length > 0 ? (
+      products.map(p => (
+        <motion.tr
+          key={p.prodCode}
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 10 }}
+          transition={{ duration: 0.3 }}
+        >
+          <td>{p.prodCode}</td>
+          <td>{p.name}</td>
+          <td>{parseFloat(p.price).toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td>{p.stock}</td>
+          <td>
+            <button className="edit-btn" onClick={() => openEditModal(p)}>Edit</button>
+            <button className="delete-btn" onClick={() => confirmDeleteProduct(p.id)}>Delete</button>
+          </td>
+        </motion.tr>
+      ))
+    ) : (
+      <tr style={{ height: '100px' }}>
+        <td colSpan="5" style={{ textAlign: 'center', color: '#6b7280', fontStyle: 'italic', fontSize: '1.2em' }}>
+          No Products Yet
+        </td>
+      </tr>
+    )}
+  </AnimatePresence>
+</tbody>
           </table>
         </div>
       </motion.div>
@@ -625,47 +661,56 @@ const filteredOrders = orders
               </tr>
             </thead>
             <tbody>
-              <AnimatePresence>
-                {filteredOrders.length > 0 ? (
-                  filteredOrders.map(o => (
-                    <motion.tr
-                      key={o.id}
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <td className="order-id">{o.displayId}</td>
-                      <td>{o.dateOfOrder ? new Date(o.dateOfOrder).toLocaleDateString() : 'N/A'}</td>
-                      <td>{o.product?.name || 'N/A'}</td>
-                      <td>{o.amount}</td>
-                      <td>{parseFloat(o.total).toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                      <td>
-                        <motion.span
-                          key={o.status}
-                          className={`status-badge ${o.status.toLowerCase()}`}
-                          initial={{ scale: 0.8, opacity: 0 }}
-                          animate={{ scale: 1, opacity: 1 }}
-                          transition={{ duration: 0.3 }}
-                        >
-                          {o.status}
-                        </motion.span>
-                      </td>
-                      <td>
-                        <button className="edit-btn" onClick={() => openEditOrderModal(o)}>Edit</button>
-                        <button className="delete-btn" onClick={() => confirmDeleteOrder(o.id)}>Delete</button>
-                      </td>
-                    </motion.tr>
-                  ))
-                ) : (
-                  <tr style={{ height: '100px' }}>
-                    <td colSpan="7" style={{ textAlign: 'center', color: '#6b7280', fontStyle: 'italic', fontSize: '1.2em' }}>
-                      No Orders Found
-                    </td>
-                  </tr>
-                )}
-              </AnimatePresence>
-            </tbody>
+  <AnimatePresence>
+    {loadingOrders ? (
+      <tr>
+        <td colSpan="7" style={{ textAlign: 'center', padding: '40px 0' }}>
+          <div className="spinner-container">
+          <div className="spinner2"></div>
+          </div>
+        </td>
+      </tr>
+    ) : filteredOrders.length > 0 ? (
+      filteredOrders.map(o => (
+        <motion.tr
+          key={o.id}
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 10 }}
+          transition={{ duration: 0.3 }}
+        >
+          <td className="order-id">{o.displayId}</td>
+          <td>{o.dateOfOrder ? new Date(o.dateOfOrder).toLocaleDateString() : 'N/A'}</td>
+          <td>{o.product?.name || 'N/A'}</td>
+          <td>{o.amount}</td>
+          <td>{parseFloat(o.total).toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td>
+            <motion.span
+              key={o.status}
+              className={`status-badge ${o.status.toLowerCase()}`}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              {o.status}
+            </motion.span>
+          </td>
+          <td>
+            <button className="edit-btn" onClick={() => openEditOrderModal(o)}>Edit</button>
+            <button className="delete-btn" onClick={() => confirmDeleteOrder(o.id)}>Delete</button>
+          </td>
+        </motion.tr>
+      ))
+    ) : (
+      <tr style={{ height: '100px' }}>
+        <td colSpan="7" style={{ textAlign: 'center', color: '#6b7280', fontStyle: 'italic', fontSize: '1.2em' }}>
+          No Orders Found
+        </td>
+      </tr>
+    )}
+  </AnimatePresence>
+</tbody>
+
           </table>
         </div>
       </motion.div>
