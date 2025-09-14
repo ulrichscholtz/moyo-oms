@@ -65,6 +65,7 @@ function Dashboard() {
 
   const [customerModalOpen, setCustomerModalOpen] = useState(false);
   const [customerData, setCustomerData] = useState(null);
+  const [isSupported, setIsSupported] = useState(window.innerWidth > 1250);
 
   const API_URL = process.env.REACT_APP_API_URL;
 
@@ -452,6 +453,47 @@ function Dashboard() {
         o.status.toLowerCase().includes(query)
       );
     });
+
+  useEffect(() => {
+    let alerted = false;
+
+    const handleResize = () => {
+      if (window.innerWidth <= 1250) {
+        setIsSupported(false);
+        if (!alerted) {
+          alerted = true;
+        }
+      } else {
+        setIsSupported(true);
+        alerted = false;
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  if (!isSupported) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          fontSize: "1.2rem",
+          color: "#333",
+          textAlign: "center",
+          gap: "12px",
+          padding: "0 20px",
+        }}
+      >
+        <FiAlertCircle size={48} color="#f39c12" />
+        <p>Dashboard not supported on this display.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard-container">
