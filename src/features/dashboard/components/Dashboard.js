@@ -491,6 +491,21 @@ function Dashboard() {
       >
         <FiAlertCircle size={48} color="#f39c12" />
         <p>Dashboard not supported at this size. (Resize or change device)</p>
+        <button
+          onClick={handleLogout}
+          style={{
+            marginTop: "20px",
+            padding: "10px 20px",
+            fontSize: "1rem",
+            borderRadius: "8px",
+            border: "none",
+            cursor: "pointer",
+            backgroundColor: "#f39c12",
+            color: "#fff",
+          }}
+        >
+          Logout
+        </button>
       </div>
     );
   }
