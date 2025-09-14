@@ -6,11 +6,11 @@
   align-items: center;
   color: #222;
   padding: 2rem;
-  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
 }
 
 .moyo-title {
-  color:  #43c5af;;
+  color: #43c5af;
 }
 
 .title-screen-card {
@@ -24,7 +24,7 @@
   max-width: 28rem;
   width: 100%;
   border: 1px solid #eee;
-  animation: lock-bounce 1.2s cubic-bezier(.68,-0.55,.27,1.55);
+  animation: lock-bounce 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
 
 .title-screen-title {
@@ -59,8 +59,13 @@
 }
 
 @keyframes lock-bounce {
-  0% { transform: scale(0.7); opacity: 0; }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .title-screen-btn {

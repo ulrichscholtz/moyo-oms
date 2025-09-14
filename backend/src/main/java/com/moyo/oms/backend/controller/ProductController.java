@@ -1,4 +1,3 @@
-// src/main/java/com/moyo/oms/backend/controller/ProductController.java
 package com.moyo.oms.backend.controller;
 
 import com.moyo.oms.backend.entity.Product;

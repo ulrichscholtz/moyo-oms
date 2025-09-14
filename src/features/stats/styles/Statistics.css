@@ -1,10 +1,15 @@
 @keyframes lock-bounce {
-  0% { transform: scale(0.7); opacity: 0; }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 body {
-  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
   background: #f6f8fb;
   margin: 0;
   padding: 0;
@@ -20,9 +25,9 @@ body {
   background: #fff;
   color: #23272f;
   padding: 40px 24px 24px 24px;
-  box-shadow: 20px 0 24px 0 rgba(30,41,59,0.08);
+  box-shadow: 20px 0 24px 0 rgba(30, 41, 59, 0.08);
   z-index: 100;
-  transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
 }
@@ -52,7 +57,7 @@ body {
 
 .dashboard-sidebar li:hover {
   background-color: #e6fffb;
-  color: #40E0D0;
+  color: #40e0d0;
   transform: scale(1.02);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
@@ -64,7 +69,7 @@ body {
 /* Sidebar toggle button */
 .sidebar-toggle-btn {
   background-color: #ffffff;
-  border: 1px solid #40E0D0;
+  border: 1px solid #40e0d0;
   border-radius: 50%;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   cursor: pointer;
@@ -93,7 +98,7 @@ body {
   padding: 40px 48px 32px 48px;
   min-height: 100vh;
   background: linear-gradient(135deg, #f6f8fb 80%, #e9eef6 100%);
-  animation: lock-bounce 1.2s cubic-bezier(.68,-0.55,.27,1.55);
+  animation: lock-bounce 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
 
 .dashboard-title {
@@ -133,7 +138,7 @@ body {
 .orders-table-container {
   background: #fff;
   border-radius: 22px;
-  box-shadow: 0 6px 32px 0 rgba(30, 41, 59, 0.10);
+  box-shadow: 0 6px 32px 0 rgba(30, 41, 59, 0.1);
   padding: 28px 32px 18px 32px;
   margin-bottom: 2em;
   overflow-x: auto;
@@ -176,7 +181,7 @@ body {
 .orders-table th,
 .orders-table td {
   border-right: 1px solid #e0e0e0; /* subtle grey vertical line */
-  padding-left: 40px;  /* space between left edge of cell and content */
+  padding-left: 40px; /* space between left edge of cell and content */
   padding-right: 40px; /* space between content and divider */
 }
 
@@ -271,7 +276,7 @@ body {
 }
 
 .create-product-form button:hover {
-    transform: scale(1.15);
+  transform: scale(1.15);
 }
 
 /* Collapsible Add Product Button */
@@ -342,20 +347,32 @@ body {
 }
 
 @keyframes message-show {
-  0% { opacity: 0; transform: translateY(10px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes message-hide {
-  0% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(-10px); }
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
 }
 
 /* Orders */
 .orders-table .order-id {
   color: #0ea5e9;
   font-weight: 700;
-  font-family: 'JetBrains Mono', 'Fira Mono', monospace;
+  font-family: "JetBrains Mono", "Fira Mono", monospace;
   text-decoration: underline;
   cursor: pointer;
 }
@@ -411,7 +428,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -423,7 +440,7 @@ body {
   background: #fff;
   padding: 30px 24px;
   border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   width: 320px;
   max-width: 90%;
   text-align: center;
@@ -477,13 +494,23 @@ body {
 
 /* Animations */
 @keyframes fade-in {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes slide-down {
-  0% { transform: translateY(-20px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
+  0% {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .edit-modal-overlay {
@@ -506,7 +533,6 @@ body {
   animation: fadeIn 0.2s ease-in-out;
 }
 
-
 .edit-modal-box h3 {
   margin: 0;
   font-size: 1.4rem;
@@ -528,10 +554,10 @@ body {
   border: 1.5px solid #e5e7eb;
   background-color: #f8fafc;
   transition: border 0.2s, box-shadow 0.2s;
-  width: 80%;        /* reduced width */
-  max-width: 260px;  /* caps the width */
-  margin: 0 auto;    /* centers input */
-  display: block;    /* ensures centering */
+  width: 80%; /* reduced width */
+  max-width: 260px; /* caps the width */
+  margin: 0 auto; /* centers input */
+  display: block; /* ensures centering */
 }
 
 .edit-modal-box input:focus {
@@ -604,7 +630,6 @@ body {
   background-color: #fff;
   color: #374151;
 }
-
 
 .edit-field {
   display: flex;
@@ -686,19 +711,25 @@ body {
 
 /* Smooth fade-in */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .status-badge.delivered {
-  background: #e6f7ff;       /* light blue */
-  color: #0c63e4;            /* deep blue text */
+  background: #e6f7ff; /* light blue */
+  color: #0c63e4; /* deep blue text */
   border: 1.5px solid #0c63e4;
 }
 
 .status-badge.cancelled {
-  background: #ffe6e6;       /* light red */
-  color: #e23c3c;            /* red text */
+  background: #ffe6e6; /* light red */
+  color: #e23c3c; /* red text */
   border: 1.5px solid #e23c3c;
 }
 
@@ -726,19 +757,19 @@ body {
 }
 
 .delete-all-orders-btn:hover {
-    transform: scale(1.15);
+  transform: scale(1.15);
 }
 
 .simulate-orders-btn:hover {
-    transform: scale(1.15);
+  transform: scale(1.15);
 }
 
 .simulate-orders-wrapper {
-  display: flex;          /* flex container for buttons + message */
-  align-items: center;    /* vertically center everything */
-  gap: 10px;              /* spacing between buttons and message */
+  display: flex; /* flex container for buttons + message */
+  align-items: center; /* vertically center everything */
+  gap: 10px; /* spacing between buttons and message */
   margin-bottom: 15px;
-  flex-wrap: wrap;        /* wrap if screen is too narrow */
+  flex-wrap: wrap; /* wrap if screen is too narrow */
 }
 
 .order-message {
@@ -816,7 +847,7 @@ body {
   border-radius: 16px;
   padding: 24px;
   text-align: center;
-  box-shadow: 0 6px 32px rgba(30,41,59,0.10);
+  box-shadow: 0 6px 32px rgba(30, 41, 59, 0.1);
   transition: transform 0.25s ease;
 }
 
@@ -840,7 +871,7 @@ body {
   text-align: center;
   color: #6b7280;
   font-style: italic;
-  box-shadow: 0 6px 32px rgba(30,41,59,0.10);
+  box-shadow: 0 6px 32px rgba(30, 41, 59, 0.1);
 }
 
 .charts-row {
@@ -855,6 +886,5 @@ body {
   background: #fff;
   border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 6px 32px rgba(30,41,59,0.10);
+  box-shadow: 0 6px 32px rgba(30, 41, 59, 0.1);
 }
-

@@ -1,4 +1,3 @@
-// src/main/java/com/moyo/oms/backend/entity/User.java
 package com.moyo.oms.backend.entity;
 
 import jakarta.persistence.*;

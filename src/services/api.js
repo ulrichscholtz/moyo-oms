@@ -1,6 +1,3 @@
-// src/services/api.js
-
-// Use environment variable instead of hardcoding localhost
 const API_URL = process.env.REACT_APP_API_URL;
 
 // Users endpoint

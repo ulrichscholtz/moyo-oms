@@ -1,14 +1,13 @@
-import './App.css';
+import "./App.css";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import VendorLogin from '../features/auth/components/VendorLogin';
-import NormalLogin from '../features/auth/components/NormalLogin';
-import Dashboard from '../features/dashboard/components/Dashboard';
-import Statistics from '../features/stats/components/Statistics';
-import { useEffect, useState } from 'react';
-import { getData } from '../services/api';
+import VendorLogin from "../features/auth/components/VendorLogin";
+import NormalLogin from "../features/auth/components/NormalLogin";
+import Dashboard from "../features/dashboard/components/Dashboard";
+import Statistics from "../features/stats/components/Statistics";
+import { useEffect, useState } from "react";
+import { getData } from "../services/api";
 
 function TitleScreen() {
-
   return (
     <div className="title-screen-bg">
       <div className="title-screen-card">
