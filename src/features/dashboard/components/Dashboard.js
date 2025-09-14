@@ -530,7 +530,19 @@ function Dashboard() {
               marginBottom: "1rem",
             }}
           >
-            <h2 style={{ margin: 0 }}>Manage Products</h2>
+            <h2 style={{ margin: 0 }}>
+              Manage Products
+              <sub
+                style={{
+                  display: "block",
+                  fontSize: "0.8rem",
+                  color: "#6b7280",
+                }}
+              >
+                This is merely here for testing, the PMS will be connected to
+                this in reality.
+              </sub>
+            </h2>
             <div
               style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
             >
@@ -737,7 +749,18 @@ function Dashboard() {
               position: "relative",
             }}
           >
-            <h2 style={{ margin: 0 }}>Orders</h2>
+            <h2 style={{ margin: 0 }}>
+              Orders
+              <sub
+                style={{
+                  display: "block",
+                  fontSize: "0.8rem",
+                  color: "#6b7280",
+                }}
+              >
+                Manage customer purchases.
+              </sub>
+            </h2>
             <div
               style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
             >
