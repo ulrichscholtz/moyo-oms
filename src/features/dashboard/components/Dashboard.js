@@ -490,7 +490,7 @@ function Dashboard() {
         }}
       >
         <FiAlertCircle size={48} color="#f39c12" />
-        <p>Dashboard not supported on this display.</p>
+        <p>Dashboard not supported at this size. (Resize or change device)</p>
       </div>
     );
   }
