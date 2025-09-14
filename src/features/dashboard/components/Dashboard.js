@@ -984,16 +984,17 @@ function Dashboard() {
             <div className="modal-divider"></div>
 
             <p>
-              <strong>Name:</strong> {customerData.name || "N/A"}
+              <strong>Name:</strong> {customerData.name || "Data in Progress"}
             </p>
             <p>
-              <strong>Email:</strong> {customerData.email || "N/A"}
+              <strong>Email:</strong> {customerData.email || "Data in Progress"}
             </p>
             <p>
-              <strong>Phone:</strong> {customerData.phone || "N/A"}
+              <strong>Phone:</strong> {customerData.phone || "Data in Progress"}
             </p>
             <p>
-              <strong>Address:</strong> {customerData.address || "N/A"}
+              <strong>Address:</strong>{" "}
+              {customerData.address || "Data in Progress"}
             </p>
 
             <div className="modal-actions">
