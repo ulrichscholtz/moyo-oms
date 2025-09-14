@@ -240,6 +240,8 @@ function Dashboard() {
   const handleDeleteAllOrders = async () => {
     if (!window.confirm("Are you sure you want to delete ALL orders?")) return;
 
+    setIsDeletingOrders(true); // start spinner
+
     try {
       for (const order of orders) {
         let res;
@@ -255,8 +257,8 @@ function Dashboard() {
         if (!res.ok) {
           const errorData = await res.json().catch(() => null);
           const msg = errorData?.message || `Cannot delete order ${order.id}.`;
-          alert(msg); // you could also show a modal if you prefer
-          continue; // skip to next order
+          alert(msg);
+          continue;
         }
 
         // Update product stock for the deleted order
@@ -269,14 +271,15 @@ function Dashboard() {
         );
       }
 
-      // Clear all orders from state after deletion
-      setOrders([]);
+      setOrders([]); // clear all
       setOrderMessage("All orders deleted successfully.");
       setShowOrderMessage(true);
       setTimeout(() => setShowOrderMessage(false), 3000);
     } catch (err) {
       console.error("Error deleting all orders:", err);
       alert("Error deleting all orders. Try again.");
+    } finally {
+      setIsDeletingOrders(false); // stop spinner
     }
   };
 
@@ -758,7 +761,8 @@ function Dashboard() {
                   color: "#6b7280",
                 }}
               >
-                Manage customer purchases.
+                Simulate Orders is for testing, Client Portal would be
+                connected.
               </sub>
             </h2>
             <div
@@ -835,7 +839,7 @@ function Dashboard() {
                       />
                     </button>
                   </div>
-                  {isSimulatingOrders && (
+                  {(isSimulatingOrders || isDeletingOrders) && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-300">
                       <div className="bg-white p-6 rounded-2xl shadow-lg flex flex-col items-center">
                         <div className="spinner"></div>
