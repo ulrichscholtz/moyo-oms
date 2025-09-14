@@ -5,14 +5,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getAllUsers } from "../../../services/api";
 import { MdOutlineDashboard } from "react-icons/md";
 import { FaChartBar } from "react-icons/fa";
-import { FiChevronLeft, FiChevronRight, FiMenu, FiSettings, FiLogOut, FiShoppingCart, FiSearch } from "react-icons/fi";
+import { FiChevronLeft, FiChevronRight, FiMenu, FiSettings, FiLogOut, FiShoppingCart, FiSearch, FiAlertCircle } from "react-icons/fi";
 
 function Dashboard() {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
   const [userEmail, setUserEmail] = useState('');
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [ordersOpen, setOrdersOpen] = useState(true); // default expanded
   const [productsOpen, setProductsOpen] = useState(true);
 
@@ -322,6 +322,7 @@ fetch(`${API_URL}/orders?userId=${user.userId}`)
           amount: randomAmount,
           status: randomStatus,
           userId: user.userId,
+          total: parseFloat((randomAmount * randomProduct.price).toFixed(2)), // ← add this
         };
 
         const res = await fetch(`${API_URL}/orders`, {
@@ -414,8 +415,6 @@ const filteredOrders = orders
     );
   });
 
-  
-
   return (
     <div className="dashboard-container">
       {/* Sidebar Toggle */}
@@ -439,7 +438,7 @@ const filteredOrders = orders
         <ul>
           <li onClick={() => navigate('/dashboard')} style={{ cursor: 'pointer' }}><MdOutlineDashboard />Dashboard</li>
           <li onClick={() => navigate('/statistics')} style={{ cursor: 'pointer' }}><FaChartBar />Statistics</li>
-          <li><FiSettings />Settings</li>
+          <li><FiSettings />Settings (WIP)</li>
           <li onClick={handleLogout}><FiLogOut />Logout</li>
         </ul>
       </aside>
@@ -518,7 +517,6 @@ const filteredOrders = orders
       )}
           {showMessage && <div className="product-message">{productMessage}</div>}
         </div>
-
         <div className="products-table-container">
           <table className="products-table">
             <thead>
@@ -773,7 +771,10 @@ const filteredOrders = orders
         {deleteModalOpen && (
           <motion.div className="modal-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <motion.div className="modal-box" initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 20, opacity: 0 }} transition={{ duration: 0.25 }}>
-              <h3>Confirm Delete</h3>
+              <h3> <FiAlertCircle 
+                style={{ marginRight: '8px', marginBottom: '4px', verticalAlign: 'middle' }} 
+                size={40} // change this number for larger/smaller
+              /> Confirm Delete</h3>
               <p>Are you sure you want to delete this product?</p>
               <div className="modal-actions">
                 <button className="cancel-btn modal-btn" onClick={() => setDeleteModalOpen(false)}>Cancel</button>
@@ -881,7 +882,10 @@ const filteredOrders = orders
         {deleteOrderModalOpen && (
           <motion.div className="modal-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <motion.div className="modal-box" initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 20, opacity: 0 }} transition={{ duration: 0.25 }}>
-              <h3>Confirm Delete</h3>
+              <h3><FiAlertCircle 
+                style={{ marginRight: '8px', marginBottom: '4px', verticalAlign: 'middle' }} 
+                size={40} // change this number for larger/smaller
+              />Confirm Delete</h3>
               <p>Are you sure you want to delete this order?</p>
               <div className="modal-actions">
                 <button className="cancel-btn modal-btn" onClick={() => setDeleteOrderModalOpen(false)}>Cancel</button>

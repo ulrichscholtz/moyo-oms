@@ -6,11 +6,11 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContai
 import { PieChart, Pie, Cell } from 'recharts';
 import { MdOutlineDashboard } from "react-icons/md";
 import { FaChartBar } from "react-icons/fa";
-import { FiMenu, FiSettings, FiLogOut, FiShoppingBag, FiPieChart } from "react-icons/fi";
+import { FiMenu, FiSettings, FiLogOut, FiShoppingBag, FiPieChart, FiChevronRight, FiChevronLeft } from "react-icons/fi";
 
 function Statistics() {
   const navigate = useNavigate();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
   const API_URL = process.env.REACT_APP_API_URL;
@@ -110,7 +110,7 @@ const COLORS = generateShades('00b894', topProductsData.length);
         onClick={toggleSidebar}
         style={{ position: 'absolute', left: sidebarOpen ? 220 : 10, top: 20, zIndex: 1000 }}
       >
-        {sidebarOpen ? '⟨' : '⟩'}
+        {sidebarOpen ? <FiChevronLeft /> : <FiChevronRight />}
       </button>
 
       {/* Sidebar */}
@@ -119,7 +119,7 @@ const COLORS = generateShades('00b894', topProductsData.length);
         <ul>
           <li onClick={() => navigate('/dashboard')} style={{ cursor: 'pointer' }}><MdOutlineDashboard />Dashboard</li>
           <li onClick={() => navigate('/statistics')} style={{ cursor: 'pointer' }}><FaChartBar />Statistics</li>
-          <li><FiSettings />Settings</li>
+          <li><FiSettings />Settings (WIP)</li>
           <li onClick={handleLogout}><FiLogOut />Logout</li>
         </ul>
       </aside>

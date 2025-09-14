@@ -61,7 +61,7 @@ const NormalAuth = () => {
         setTimeout(() => {
           setSuccessMessage('Signup successful!');
           setTimeout(() => {
-            navigate('/login');
+            window.location.reload();
           }, 3000); // 3 seconds delay before page reload
         }, 1000); // 1 second delay before showing success message
       } else {
@@ -118,8 +118,8 @@ const NormalAuth = () => {
       </h2>
       <p className={`auth-subtitle ${animateOut ? 'fade-out' : 'fade-in'}`}>
         {isLogin
-          ? 'Enter your credentials to access your account.'
-          : 'Create a new account to get started.'}
+          ? 'Enter your credentials to access your account and see your products.'
+          : 'Create a new account to get started and manage your products.'}
       </p>
 
       <form

@@ -1,4 +1,29 @@
-/* Container */
+/* -------------------------- */
+/* FULL-PAGE ANIMATED BACKGROUND */
+/* -------------------------- */
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+
+  /* Animated gradient background */
+  background: linear-gradient(270deg, #00b894, #00cec9, #e0f7fa, #f8fafc);
+  background-size: 800% 800%;
+  animation: backgroundShift 20s ease infinite;
+}
+
+@keyframes backgroundShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* -------------------------- */
+/* CONTAINER */
+/* -------------------------- */
 .auth-container {
   max-width: 420px;
   margin: 48px auto;
@@ -6,7 +31,6 @@
   background: linear-gradient(135deg, #f8fafc 60%, #e0f7fa 100%);
   border-radius: 22px;
   box-shadow: 0 8px 36px rgba(0, 0, 0, 0.13), 0 2px 8px rgba(0,0,0,0.06);
-  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
   border: 1.5px solid #e3e8ee;
   position: relative;
   overflow: hidden;
@@ -14,7 +38,9 @@
   animation: lock-bounce 1.2s cubic-bezier(.68,-0.55,.27,1.55);
 }
 
-/* Lock Icon */
+/* -------------------------- */
+/* LOCK ICON */
+/* -------------------------- */
 .lock-icon {
   font-size: 48px;
   margin-bottom: 16px;
@@ -23,13 +49,14 @@
   animation: lock-bounce 1.2s cubic-bezier(.68,-0.55,.27,1.55);
 }
 
-/* Animation keyframes */
 @keyframes lock-bounce {
   0% { transform: scale(0.7); opacity: 0; }
   100% { transform: scale(1); }
 }
 
-/* Fade animations for smooth transitions (form, title, subtitle) */
+/* -------------------------- */
+/* FADE ANIMATIONS */
+/* -------------------------- */
 .fade-in {
   animation: fadeSlideIn 0.3s ease forwards;
 }
@@ -48,7 +75,9 @@
   100% { opacity: 0; transform: translateY(-20px); }
 }
 
-/* Titles */
+/* -------------------------- */
+/* TITLES */
+/* -------------------------- */
 .auth-title {
   font-size: 30px;
   font-weight: 800;
@@ -62,7 +91,9 @@
   margin-bottom: 32px;
 }
 
-/* Form */
+/* -------------------------- */
+/* FORM */
+/* -------------------------- */
 .auth-form {
   display: flex;
   flex-direction: column;
@@ -122,8 +153,13 @@
   box-shadow: 0 2px 12px #00b89422;
 }
 
-/* Primary Buttons */
+/* -------------------------- */
+/* BUTTONS */
+/* -------------------------- */
 .primary-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: linear-gradient(90deg, #00b894 60%, #00cec9 100%);
   color: white;
   padding: 14px 0;
@@ -142,7 +178,11 @@
   transform: translateY(-2px) scale(1.03);
 }
 
-/* Back button */
+.primary-button:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+
 .back-button {
   background: #fff;
   color: #00b894;
@@ -165,7 +205,9 @@
   transform: translateY(-1px) scale(1.02);
 }
 
-/* Toggle link */
+/* -------------------------- */
+/* TOGGLE LINK */
+/* -------------------------- */
 .toggle-text {
   font-size: 14px;
   color: #5e6e82;
@@ -178,31 +220,54 @@
   margin-left: 4px;
 }
 
+/* -------------------------- */
+/* SUCCESS & ERROR MESSAGES */
+/* -------------------------- */
 .auth-success {
-  color: #27ae60;              /* Green text */
-  border: 1px solid #27ae60;   /* Green border */
-  border-radius: 8px;           /* Rounded corners */
+  color: #27ae60;
+  border: 1px solid #27ae60;
+  border-radius: 8px;
   padding: 10px 15px;
-  margin: 10px auto;           /* Center and spacing */
+  margin: 10px auto;
   text-align: center;
-  background-color: #e6f9f0;    /* Light green background */
+  background-color: #e6f9f0;
   font-size: 0.9rem;
   transition: opacity 0.3s ease-in-out;
 }
 
-
 .auth-error {
-  color: #e74c3c;           /* Red text color */
-  border: 1px solid #e74c3c; /* Red border */
-  border-radius: 8px;        /* Rounded corners */
-  padding: 10px 15px;        /* Space inside the box */
-  margin: 10px 0;            /* Space above and below */
-  text-align: center;        /* Center the text */
-  background-color: #ffe6e6; /* Light red/pink background for emphasis */
-  font-size: 0.9rem;         /* Slightly smaller font */
+  color: #e74c3c;
+  border: 1px solid #e74c3c;
+  border-radius: 8px;
+  padding: 10px 15px;
+  margin: 10px 0;
+  text-align: center;
+  background-color: #ffe6e6;
+  font-size: 0.9rem;
 }
 
-/* Responsive */
+/* -------------------------- */
+/* SPINNER */
+/* -------------------------- */
+.spinner {
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #34d5db;
+  border-radius: 20%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+  display: inline-block;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* -------------------------- */
+/* RESPONSIVE */
+/* -------------------------- */
 @media (max-width: 600px) {
   .auth-container {
     max-width: 98vw;
@@ -217,40 +282,3 @@
   .input-group input { font-size: 15px; padding: 12px 10px 8px 10px; }
   .primary-button, .back-button { font-size: 15px; padding: 12px 0; max-width: 100%; }
 }
-
-/* Spinner styles */
-.spinner {
-  border: 2px solid #f3f3f3; /* Light gray border */
-  border-top: 2px solid #34d5db; /* Blue border */
-  border-radius: 20%;
-  width: 20px;
-  height: 20px;
-  animation: spin 1s linear infinite;
-  margin-right: 8px; /* Add some spacing between the spinner and the button text */
-  display: inline-block; /* Ensure spinner stays inline with the text */
-}
-
-/* Spinner animation */
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Ensure button text and spinner are aligned properly */
-.primary-button {
-  display: flex;
-  align-items: center; /* Align the spinner and text horizontally */
-  justify-content: center; /* Center the content */
-  padding: 10px 20px;
-  background-color: #40E0D0;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.primary-button:disabled {
-  background-color: #ddd; /* Gray background when disabled */
-  cursor: not-allowed;
-}
-
