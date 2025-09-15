@@ -15,6 +15,7 @@ import {
   FiSearch,
   FiAlertCircle,
 } from "react-icons/fi";
+import keycloak from "../../../services/keycloak";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -78,18 +79,21 @@ function Dashboard() {
   }, []);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("loggedInUser"));
-    if (!user) {
+    if (!keycloak.authenticated) {
       navigate("/login");
       return;
     }
-    setUserEmail(user.email);
+    setUserEmail(
+      keycloak.tokenParsed?.email ||
+        keycloak.tokenParsed?.preferred_username ||
+        ""
+    );
 
     // Fetch products
     // Start loading
     setLoadingProducts(true);
 
-    fetch(`${API_URL}/products?userId=${user.userId}`)
+    fetch(`${API_URL}/products?userId=${keycloak.tokenParsed?.sub}`)
       .then((res) => res.json())
       .then((data) => {
         const productsWithCode = data.map((p, index) => ({
@@ -112,7 +116,7 @@ function Dashboard() {
     // Start loading
     setLoadingOrders(true);
 
-    fetch(`${API_URL}/orders?userId=${user.userId}`)
+    fetch(`${API_URL}/orders?userId=${keycloak.tokenParsed?.sub}`)
       .then((res) => res.json())
       .then((data) => {
         // Wait 2 seconds before setting the orders
@@ -149,16 +153,14 @@ function Dashboard() {
 
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to log out?")) {
-      localStorage.removeItem("loggedInUser");
-      navigate("/login");
+      keycloak.logout({
+        redirectUri: window.location.origin + "/login",
+      });
     }
   };
 
   // ----- PRODUCT HANDLERS -----
   const handleCreateProduct = () => {
-    const user = JSON.parse(localStorage.getItem("loggedInUser"));
-    if (!user) return;
-
     if (!newProduct.name || !newProduct.price || !newProduct.stock) {
       setProductMessage("Please fill in all product fields.");
       setShowMessage(true);
@@ -174,7 +176,7 @@ function Dashboard() {
       const productToSend = {
         ...newProduct,
         price: parseFloat(newProduct.price).toFixed(2),
-        userId: user.userId,
+        userId: keycloak.tokenParsed?.sub,
       };
 
       fetch(`${API_URL}/products`, {
@@ -326,9 +328,6 @@ function Dashboard() {
 
   // ----- ORDER HANDLERS -----
   const handleSimulateOrders = async () => {
-    const user = JSON.parse(localStorage.getItem("loggedInUser"));
-    if (!user) return;
-
     if (products.length === 0 || products.every((p) => p.stock === 0)) {
       setOrderMessage("No products available to simulate orders.");
       setShowOrderMessage(true);
@@ -341,7 +340,6 @@ function Dashboard() {
     setTimeout(async () => {
       try {
         const statuses = ["Pending", "Delivered", "Cancelled"];
-        const ordersToSimulate = [];
         const createdOrders = [];
 
         for (let i = 0; i < 3; i++) {
@@ -361,8 +359,8 @@ function Dashboard() {
             productId: randomProduct.id,
             amount: randomAmount,
             status: randomStatus,
-            userId: user.userId,
-            total: parseFloat((randomAmount * randomProduct.price).toFixed(2)), // ← add this
+            userId: keycloak.tokenParsed?.sub,
+            total: parseFloat((randomAmount * randomProduct.price).toFixed(2)),
           };
 
           const res = await fetch(`${API_URL}/orders`, {

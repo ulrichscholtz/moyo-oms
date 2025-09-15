@@ -1,11 +1,18 @@
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  Navigate,
+} from "react-router-dom";
 import VendorLogin from "../features/auth/components/VendorLogin";
 import NormalLogin from "../features/auth/components/NormalLogin";
 import Dashboard from "../features/dashboard/components/Dashboard";
 import Statistics from "../features/stats/components/Statistics";
 import { useEffect, useState } from "react";
 import { getData } from "../services/api";
+import keycloak from "../services/keycloak";
 
 function TitleScreen() {
   return (
@@ -23,15 +30,37 @@ function TitleScreen() {
   );
 }
 
+// PrivateRoute component
+function PrivateRoute({ children }) {
+  if (!keycloak.authenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+}
+
 export default function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<TitleScreen />} />
         <Route path="/login" element={<VendorLogin />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
         <Route path="/classic-login" element={<NormalLogin />} />
-        <Route path="/statistics" element={<Statistics />} />
+        <Route
+          path="/statistics"
+          element={
+            <PrivateRoute>
+              <Statistics />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </Router>
   );

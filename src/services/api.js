@@ -1,12 +1,24 @@
+import keycloak from "./keycloak";
+
 const API_URL = process.env.REACT_APP_API_URL;
 
 // Users endpoint
 const USERS_API = `${API_URL}/users`;
 
+// Authenticated fetch helper
+export async function fetchWithAuth(url, options = {}) {
+  const token = keycloak.token;
+  const headers = {
+    ...options.headers,
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
+  return fetch(url, { ...options, headers });
+}
+
 export async function createUser(user) {
-  const response = await fetch(USERS_API, {
+  const response = await fetchWithAuth(USERS_API, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(user),
   });
 
@@ -19,14 +31,14 @@ export async function createUser(user) {
 }
 
 export async function getAllUsers() {
-  const response = await fetch(USERS_API);
+  const response = await fetchWithAuth(USERS_API);
   if (!response.ok) throw new Error("Failed to fetch users");
   return response.json();
 }
 
 // Example test endpoint
 export async function getData() {
-  const response = await fetch(`${API_URL}/users`);
+  const response = await fetchWithAuth(`${API_URL}/users`);
   if (!response.ok) throw new Error("Failed to fetch data");
   return response.json();
 }

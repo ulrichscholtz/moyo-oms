@@ -23,6 +23,7 @@ import {
   FiChevronRight,
   FiChevronLeft,
 } from "react-icons/fi";
+import keycloak from "../../../services/keycloak";
 
 function Statistics() {
   const navigate = useNavigate();
@@ -32,20 +33,20 @@ function Statistics() {
   const API_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("loggedInUser"));
-    if (!user) {
+    // Redirect to login if not authenticated
+    if (!keycloak.authenticated) {
       navigate("/login");
       return;
     }
 
     // Fetch products
-    fetch(`${API_URL}/products?userId=${user.userId}`)
+    fetch(`${API_URL}/products?userId=${keycloak.tokenParsed?.sub}`)
       .then((res) => res.json())
       .then((data) => setProducts(data))
       .catch((err) => console.error(err));
 
     // Fetch orders safely
-    fetch(`${API_URL}/orders?userId=${user.userId}`)
+    fetch(`${API_URL}/orders?userId=${keycloak.tokenParsed?.sub}`)
       .then((res) => res.json())
       .then((data) => {
         const safeOrders = data.map((o) => ({
@@ -58,7 +59,7 @@ function Statistics() {
         setOrders(safeOrders);
       })
       .catch((err) => console.error(err));
-  }, [navigate]);
+  }, [navigate, API_URL]);
 
   // Revenue aggregation using actual order date
   const revenueByDate = orders.reduce((acc, order) => {
@@ -84,8 +85,9 @@ function Statistics() {
 
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to log out?")) {
-      localStorage.removeItem("loggedInUser");
-      navigate("/login");
+      keycloak.logout({
+        redirectUri: window.location.origin + "/login",
+      });
     }
   };
 
