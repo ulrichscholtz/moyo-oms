@@ -1,3 +1,5 @@
+# ⚠️ PROJECT IS NO LONGER HOSTED (NON-FUNCTIONAL)
+
 # Order Management System (OMS)
 
 ## Overview  
